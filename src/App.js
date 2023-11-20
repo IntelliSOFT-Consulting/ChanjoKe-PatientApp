@@ -1,4 +1,4 @@
-import logo from './logo.svg';
+// import logo from './logo.svg';
 import './App.css';
 
 function App() {
@@ -10,8 +10,8 @@ function App() {
           Welcome to...
         </p>
         <a
-          className="App-link"
-          href="#"
+          className="text-3xl font-bold underline"
+          href="/"
           target="_blank"
           rel="noopener noreferrer"
         >
