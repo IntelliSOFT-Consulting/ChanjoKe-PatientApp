@@ -1,13 +1,13 @@
 # First Stage
 
-FROM node:18-alphine
+FROM node:16
 WORKDIR /app
 COPY package.json .
 COPY package-lock.json .
-RUN npm run install
+RUN npm install
 COPY . .
-RUN npm run build
-CMD npm run start
+RUN npm build
+CMD npm start
 
 # Second Stage
 # FROM nginx:1.19.0
