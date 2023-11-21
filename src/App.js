@@ -20,8 +20,8 @@ function App() {
       <Routes>
         <Route path="/" element={ isAuthorized ? <AuthorizedLayout /> : <UnauthorizedLayout /> }>
           <Route index element={isAuthorized ? <Home /> : <Login />} />
-          <Route path="vaccine-certificate" element={<VaccinationCertificate />} />
-          <Route path="vaccine-schedule" element={<VaccinationSchedule/>} />
+          <Route path="vaccination-certificate" element={<VaccinationCertificate />} />
+          <Route path="vaccination-schedule" element={<VaccinationSchedule/>} />
           <Route path="login" element={<Login />} />
           <Route path="registration" element={<Registration />} />
           <Route path="*" element={<Page404 />} />
