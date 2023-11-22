@@ -18,8 +18,8 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={ !authToken ? <AuthorizedLayout /> : <UnauthorizedLayout /> }>
-          <Route index element={ !authToken ? <Home /> : <Login />} />
+        <Route path="/" element={ authToken === 'distoken' ? <AuthorizedLayout /> : <UnauthorizedLayout /> }>
+          <Route index element={ authToken === 'distoken' ? <Home /> : <Login />} />
           <Route path="vaccination-certificate" element={<VaccinationCertificate />} />
           <Route path="vaccination-schedule" element={<VaccinationSchedule/>} />
           <Route path="login" element={<Login />} />

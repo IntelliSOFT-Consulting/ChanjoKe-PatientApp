@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import Stats from '../components/Stats';
 import Table from '../components/Table';
 
