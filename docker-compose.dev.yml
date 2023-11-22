@@ -6,7 +6,12 @@ services:
     image: docker-chanjoke-patient-i
     build:
       context: .
+      dockerfile: docker/Dockerfile.dev
     environment:
       - NODE_ENV=production
+      - CHOKIDAR_USEPOLLING=true
+    volumes:
+      - .:/app
+      - /app/node_modules
     ports:
-      - 8080:80
+      - 3000:3000
