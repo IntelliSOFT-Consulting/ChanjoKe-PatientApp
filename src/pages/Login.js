@@ -1,6 +1,9 @@
 function Login() {
   return (
-    <div>Log In to ChanjoKE</div>
+    <div>
+      <div>Log In to ChanjoKE</div>
+    </div>
+    
   );
 }
 

@@ -12,14 +12,14 @@ import VaccinationCertificate from './pages/VaccinationCertificate';
 import AuthorizedLayout from './layouts/AuthorizedLayout'
 import UnauthorizedLayout from './layouts/UnauthorizedLayout';
 
-const isAuthorized = true;
+const authToken = localStorage.getItem('token')
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={ isAuthorized ? <AuthorizedLayout /> : <UnauthorizedLayout /> }>
-          <Route index element={isAuthorized ? <Home /> : <Login />} />
+        <Route path="/" element={ !authToken ? <AuthorizedLayout /> : <UnauthorizedLayout /> }>
+          <Route index element={ !authToken ? <Home /> : <Login />} />
           <Route path="vaccination-certificate" element={<VaccinationCertificate />} />
           <Route path="vaccination-schedule" element={<VaccinationSchedule/>} />
           <Route path="login" element={<Login />} />
