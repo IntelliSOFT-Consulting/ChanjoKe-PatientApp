@@ -19,7 +19,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-const SideNav = () => {
+export default function Root() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
@@ -57,8 +57,7 @@ const SideNav = () => {
                     enterTo="opacity-100"
                     leave="ease-in-out duration-300"
                     leaveFrom="opacity-100"
-                    leaveTo="opacity-0"
-                  >
+                    leaveTo="opacity-0">
                     <div className="absolute left-full top-0 flex w-16 justify-center pt-5">
                       <button type="button" className="-m-2.5 p-2.5" onClick={() => setSidebarOpen(false)}>
                         <span className="sr-only">Close sidebar</span>
@@ -68,12 +67,8 @@ const SideNav = () => {
                   </Transition.Child>
                   {/* Sidebar component, swap this element with another sidebar if you like */}
                   <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pb-2">
-                    <div className="flex h-16 shrink-0 items-center">
-                      <img
-                        className="h-8 w-auto"
-                        src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-                        alt="Your Company"
-                      />
+                    <div className="flex h-16 shrink-0 text-center text-[#2B76C1]">
+                      ChanjoKE
                     </div>
                     <nav className="flex flex-1 flex-col">
                       <ul role="list" className="flex flex-1 flex-col gap-y-7">
@@ -82,6 +77,7 @@ const SideNav = () => {
                             {navigation.map((item) => (
                               <li key={item.name}>
                                 <Link
+                                  onClick={() => setSidebarOpen(false)}
                                   to={item.href}
                                   className={classNames(
                                     item.current
@@ -89,7 +85,7 @@ const SideNav = () => {
                                       : 'text-gray-700 hover:text-indigo-600 hover:bg-gray-50',
                                     'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
                                   )}>
-                                  <span class="material-symbols-outlined">{item.icon}</span>
+                                  <span className="material-symbols-outlined">{item.icon}</span>
                                   {item.name}
                                 </Link>
                               </li>
@@ -131,7 +127,7 @@ const SideNav = () => {
                               : 'text-gray-700 hover:text-indigo-600 hover:bg-gray-50',
                             'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
                           )}>
-                          <span class="material-symbols-outlined">{item.icon}</span>
+                          <span className="material-symbols-outlined">{item.icon}</span>
                           {item.name}
                         </Link>
                       </li>
@@ -161,11 +157,9 @@ const SideNav = () => {
             <span className="sr-only">Open sidebar</span>
             <Bars3Icon className="h-6 w-6" aria-hidden="true" />
           </button>
-          <div className="flex-1 text-sm font-semibold leading-6 text-gray-900">Dashboard</div>
-
-          <div>Mosh</div>
+          <div className="flex-1 text-sm font-semibold leading-6 text-gray-900">ChanjoKE</div>
           
-          {/* <ProfileDropdown /> */}
+          <ProfileDropdown />
         </div>
 
         <main className="py-10 lg:pl-72">
@@ -180,6 +174,4 @@ const SideNav = () => {
       </div>
     </>
   )
-};
-
-export default SideNav;
+}
