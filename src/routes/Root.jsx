@@ -4,15 +4,16 @@ import { Dialog, Transition } from '@headlessui/react';
 import {
   Bars3Icon,
   XMarkIcon,
-} from '@heroicons/react/24/outline';
+} from '@heroicons/react/24/outline'
+import { useLocation } from 'react-router-dom'
 
 import NavBar from "../components/NavBar";
 import ProfileDropdown from "../components/ProfileDropdown";
 
 const navigation = [
   { name: 'Home', href: '/', icon: 'house', current: true },
-  { name: 'Vaccination Schedule', href: 'vaccination-schedule', icon: 'vaccines', current: false },
-  { name: 'Vaccination Certificate', href: 'vaccination-certificate', icon: 'description', current: false },
+  { name: 'Vaccination Schedule', href: '/vaccination-schedule', icon: 'vaccines', current: false },
+  { name: 'Vaccination Certificate', href: '/vaccination-certificate', icon: 'description', current: false },
 ]
 
 function classNames(...classes) {
@@ -21,6 +22,7 @@ function classNames(...classes) {
 
 export default function Root() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { pathname } = useLocation();
 
   return (
     <>
@@ -85,7 +87,7 @@ export default function Root() {
                                   onClick={() => setSidebarOpen(false)}
                                   to={item.href}
                                   className={classNames(
-                                    item.current
+                                    pathname === item.href
                                       ? 'bg-gray-50 text-indigo-600'
                                       : 'text-gray-700 hover:text-indigo-600 hover:bg-gray-50',
                                     'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
@@ -127,7 +129,7 @@ export default function Root() {
                         <Link
                           to={item.href}
                           className={classNames(
-                            item.current
+                            pathname === item.href
                               ? 'bg-gray-50 text-indigo-600'
                               : 'text-gray-700 hover:text-indigo-600 hover:bg-gray-50',
                             'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'

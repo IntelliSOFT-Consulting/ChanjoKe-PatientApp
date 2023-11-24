@@ -22,11 +22,17 @@ function Registration() {
         <h1 className='text-4xl text-[#163C94] text-center'>Self Registration</h1>
 
         <form className='mt-5'>
-          <TextInput
-            inputType="text"
-            inputName="idType"
-            inputId="idType"
-            inputPlaceholder="Identification Type"/>
+
+          <div>
+            <select
+              id="location"
+              name="location"
+              className="mt-2 block w-full rounded-md border-0 py-4 pl-3 pr-10 text-gray-400 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:leading-6"
+              defaultValue="">
+              <option>Identification Number</option>
+              <option>Passport Number</option>
+            </select>
+          </div>
 
           <br />
 
@@ -79,7 +85,7 @@ function Registration() {
             </a>
           </div>
 
-          <p className='text-center mt-3'>Already have an account? <Link className="text-[#163C94]" to="/login">Login here</Link></p>
+          <p className='text-center mt-3'>Already have an account? <Link className="text-[#163C94]" to="/auth">Login here</Link></p>
         </form>
       </div>
     </div>

@@ -61,7 +61,7 @@ function Login() {
             </a>
           </div>
 
-          <p className='text-center mt-3'>Don't have an account? <Link className="text-[#163C94]" to="/registration">Sign up here</Link></p>
+          <p className='text-center mt-3'>Don't have an account? <Link className="text-[#163C94]" to="/auth/registration">Sign up here</Link></p>
         </form>
       </div>
     </div>
