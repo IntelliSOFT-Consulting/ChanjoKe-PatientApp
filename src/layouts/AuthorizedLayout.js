@@ -140,7 +140,7 @@ const SideNav = () => {
                 </li>
                 <li className="-mx-6 mt-auto">
                   <Link
-                    href="/"
+                    to="/"
                     className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-50 md:collapse">
                     <img
                       className="h-8 w-8 rounded-full bg-gray-50"
@@ -163,9 +163,7 @@ const SideNav = () => {
           </button>
           <div className="flex-1 text-sm font-semibold leading-6 text-gray-900">Dashboard</div>
 
-          <div>Mosh</div>
-          
-          {/* <ProfileDropdown /> */}
+          <ProfileDropdown />
         </div>
 
         <main className="py-10 lg:pl-72">
