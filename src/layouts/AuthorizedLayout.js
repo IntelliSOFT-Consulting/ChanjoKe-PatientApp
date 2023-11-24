@@ -1,4 +1,4 @@
-import { Outlet, Link } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import { Fragment, useState } from "react";
 import { Dialog, Transition } from '@headlessui/react';
 import {
@@ -10,9 +10,9 @@ import NavBar from "../components/NavBar";
 import ProfileDropdown from "../components/ProfileDropdown";
 
 const navigation = [
-  { name: 'Home', href: '/', icon: 'house', current: true },
-  { name: 'Vaccination Schedule', href: 'vaccination-schedule', icon: 'vaccines', current: false },
-  { name: 'Vaccination Certificate', href: 'vaccination-certificate', icon: 'description', current: false },
+  { name: 'Home', href: '/', icon: 'house', current: false },
+  { name: 'Vaccination Schedule', href: '/vaccination-schedule', icon: 'vaccines', current: false },
+  { name: 'Vaccination Certificate', href: '/vaccination-certificate', icon: 'description', current: false },
 ]
 
 function classNames(...classes) {
@@ -21,6 +21,8 @@ function classNames(...classes) {
 
 const SideNav = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const { pathname } = useLocation();
 
   return (
     <>
@@ -84,12 +86,13 @@ const SideNav = () => {
                                 <Link
                                   to={item.href}
                                   className={classNames(
-                                    item.current
+                                    pathname === item.href
                                       ? 'bg-gray-50 text-indigo-600'
                                       : 'text-gray-700 hover:text-indigo-600 hover:bg-gray-50',
                                     'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
-                                  )}>
-                                  <span class="material-symbols-outlined">{item.icon}</span>
+                                  )}
+                                >
+                                  <span className="material-symbols-outlined">{item.icon}</span>
                                   {item.name}
                                 </Link>
                               </li>
@@ -126,12 +129,13 @@ const SideNav = () => {
                         <Link
                           to={item.href}
                           className={classNames(
-                            item.current
+                            pathname === item.href
                               ? 'bg-gray-50 text-indigo-600'
                               : 'text-gray-700 hover:text-indigo-600 hover:bg-gray-50',
                             'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
-                          )}>
-                          <span class="material-symbols-outlined">{item.icon}</span>
+                          )}
+                        >
+                          <span className="material-symbols-outlined">{item.icon}</span>
                           {item.name}
                         </Link>
                       </li>
