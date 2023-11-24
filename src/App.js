@@ -1,24 +1,33 @@
 // import logo from './logo.svg';
 import './App.css';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
+// Pages
+import Home from './pages/Home';
+import Login from './pages/Login';
+import Page404 from './pages/Page404';
+import Registration from './pages/Registration';
+import VaccinationSchedule from './pages/VaccinationSchedule';
+import VaccinationCertificate from './pages/VaccinationCertificate';
+import AuthorizedLayout from './layouts/AuthorizedLayout'
+import UnauthorizedLayout from './layouts/UnauthorizedLayout';
+
+const isAuthorized = true;
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        {/* <img src={logo} className="App-logo" alt="logo" /> */}
-        <p>
-          Welcome to...
-        </p>
-        <a
-          className="text-3xl font-bold underline"
-          href="/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          ChanjoKE
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={ isAuthorized ? <AuthorizedLayout /> : <UnauthorizedLayout /> }>
+          <Route index element={isAuthorized ? <Home /> : <Login />} />
+          <Route path="vaccination-certificate" element={<VaccinationCertificate />} />
+          <Route path="vaccination-schedule" element={<VaccinationSchedule/>} />
+          <Route path="login" element={<Login />} />
+          <Route path="registration" element={<Registration />} />
+          <Route path="*" element={<Page404 />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
 
