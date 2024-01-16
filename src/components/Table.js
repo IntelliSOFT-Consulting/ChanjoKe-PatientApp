@@ -1,4 +1,6 @@
 export default function Table(props) {
+
+  const handleDownload = () => {}
   return (
     <div className="border-b border-gray-200 rounded-lg shadow bg-white px-4 py-5 sm:px-6">
       <div className="sm:flex sm:items-center">
@@ -21,15 +23,26 @@ export default function Table(props) {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200 bg-white">
-                  {props.data.map((item, index) => (
-                    <tr className="divide-x divide-gray-200" key={index}>
-                      {Object.keys(item).map((itemkey) => (
-                        <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm text-gray-600 sm:pl-6">
-                          {item[itemkey]}
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
+                {props.data.map((item, index) => (
+                  <tr className="divide-x divide-gray-200" key={index}>
+                    {Object.keys(item).map((itemkey) => (
+                      <td
+                        className={`whitespace-nowrap py-4 pl-4 pr-3 text-sm ${
+                          props.theaders.find((header) => header.title === itemkey)?.classes || ''
+                        }`}
+                        key={itemkey}
+                      >
+                        {itemkey === 'action' ? (
+                          <button className="text-blue-500" onClick={() => handleDownload(item['number'])}>
+                            Download
+                          </button>
+                        ) : (
+                          item[itemkey]
+                        )}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
                 </tbody>
               </table>
             </div>

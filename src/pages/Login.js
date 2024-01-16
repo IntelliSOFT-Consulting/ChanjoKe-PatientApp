@@ -1,15 +1,47 @@
-import MOHLogo from '../assets/nav-logo.png';
-import TextInput from '../components/TextInput';
-import { Link } from 'react-router-dom'
-import  { useNavigate } from 'react-router-dom';
+import MOHLogo from '../assets/nav-logo.png'
+import TextInput from '../components/TextInput'
+import { Link, useNavigate } from 'react-router-dom'
+import { useState } from 'react'
+// import  { useNavigate } from 'react-router-dom'
+import UsePostRequest from '../api/UsePostRequest'
 
-function Login() {
-  const navigate = useNavigate()
+export default function Login() {
+  const [authData, setAuthData] = useState({
+    idNumber: '',
+    password: '',
+  });
 
-  const logUserIn = () => {
-    localStorage.setItem('token', 'distoken')
-    navigate("/")
-  }
+  const navigation = useNavigate()
+
+  const handleChange = (name, value) => {
+    setAuthData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+
+    navigation("/")
+
+    // Do something with authData, e.g., call an API
+    console.log(authData);
+
+    try {
+      const { data, loading, error } = await UsePostRequest('auth/client/login', {
+        idNumber: authData.idNumber,
+        password: authData.password,
+      });
+
+      console.log({ data, loading, error });
+
+      // Reset the form if needed
+      setAuthData({ idNumber: '', password: '' });
+    } catch (error) {
+      console.error('Error in usePostRequest:', error);
+    }
+  };
 
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-32">
@@ -21,11 +53,15 @@ function Login() {
 
         <h1 className='text-4xl text-[#163C94] text-center'>Login to your account</h1>
 
-        <form className='mt-5'>
+        <p>{authData.idNumber}</p>
+
+        <form className='mt-5' onSubmit={handleSubmit}>
           <TextInput
-            inputType="email"
-            inputName="email"
-            inputId="email"
+            inputType="text"
+            inputName="idNumber"
+            inputId="idNumber"
+            inputValue={authData.idNumber}
+            onInputChange={(value) => handleChange("idNumber", value)}
             leadingIcon="true"
             leadingIconName="mail"
             inputPlaceholder="ID or Passport Number"/>
@@ -37,6 +73,8 @@ function Login() {
             inputName="password"
             inputId="password"
             leadingIcon="true"
+            inputValue={authData.password}
+            onInputChange={(value) => handleChange("password", value)}
             leadingIconName="lock"
             inputPlaceholder="Password"/>
 
@@ -52,13 +90,13 @@ function Login() {
                 Login with eCitizen
               </span>
             </a>
-            <a
-              onClick={logUserIn}
+            <button
+              type="submit"
               className="flex w-full items-center justify-center gap-3 rounded-md bg-[#163C94] px-3 py-3 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#24292F]">
               <span className="text-sm font-semibold leading-6">
                 Login
               </span>
-            </a>
+            </button>
           </div>
 
           <p className='text-center mt-3'>Don't have an account? <Link className="text-[#163C94]" to="/auth/registration">Sign up here</Link></p>
@@ -67,5 +105,3 @@ function Login() {
     </div>
   );
 }
-
-export default Login;
