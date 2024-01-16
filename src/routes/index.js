@@ -7,6 +7,7 @@ import VaccinationSchedule from '../pages/VaccinationSchedule'
 import Login from '../pages/Login'
 import Registration from '../pages/Registration'
 import UnauthorizedLayout from '../layouts/UnauthorizedLayout'
+import FAQs from '../pages/FAQs'
 
 const router = createBrowserRouter([
   {
@@ -25,6 +26,10 @@ const router = createBrowserRouter([
       {
         path: 'vaccination-certificate',
         element: <VaccinationCertificate />
+      },
+      {
+        path: 'faqs',
+        element: <FAQs />
       }
     ]
   },
