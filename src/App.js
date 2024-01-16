@@ -11,6 +11,7 @@ import VaccinationSchedule from './pages/VaccinationSchedule';
 import VaccinationCertificate from './pages/VaccinationCertificate';
 import AuthorizedLayout from './layouts/AuthorizedLayout'
 import UnauthorizedLayout from './layouts/UnauthorizedLayout';
+import FAQs from './pages/FAQs';
 
 const authToken = localStorage.getItem('token')
 
@@ -24,6 +25,7 @@ function App() {
           <Route path="vaccination-schedule" element={<VaccinationSchedule/>} />
           <Route path="login" element={<Login />} />
           <Route path="registration" element={<Registration />} />
+          <Route path="faqs" element={<FAQs />} />
           <Route path="*" element={<Page404 />} />
         </Route>
       </Routes>

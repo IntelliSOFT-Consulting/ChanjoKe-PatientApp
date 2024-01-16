@@ -1,4 +1,5 @@
 export default function TextInput(props) {
+
   return (
     <div>
       <div className="relative mt-2 rounded-md shadow-sm">
@@ -15,6 +16,8 @@ export default function TextInput(props) {
           type={props.inputType}
           name={props.inputName}
           id={props.inputId}
+          value={props.inputValue}
+          onChange={(e) => props.onInputChange(e.target.value)}
           className={
             props.leadingIcon
             ? 'block w-full rounded-md border-0 py-4 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600'

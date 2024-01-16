@@ -20,9 +20,9 @@ function NavBar() {
           src={MOHLogo}
           alt="Ministry of Health"/>
         <Link
-          to="/"
+          to="faqs"
           className="ml-auto flex items-center gap-x-1 rounded-md bg-[#163C94] px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-          Need Help?
+          FAQs
         </Link>
 
         <ProfileDropdown />
