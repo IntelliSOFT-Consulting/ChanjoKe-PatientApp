@@ -3,41 +3,6 @@ import { MinusSmallIcon, PlusSmallIcon } from '@heroicons/react/24/outline'
 
 const faqs = [
   {
-    question: "Will patients get vaccination certificates instantly or does it take time?",
-    answer:
-      "Yes, if the data was entered real-time.",
-  },
-  {
-    question: "Why am I not able to do vaccinations?",
-    answer:
-      "-",
-  },
-  {
-    question: "What is required to register a patient?",
-    answer:
-      "ID Number / Passport / Birth Certificate number / Phone number.",
-  },
-  {
-    question: "How do you register a client with two identification documents? (ID and Passport number)",
-    answer:
-      "Use the ID number instead of the passport number.",
-  },
-  {
-    question: "How do you manage duplicate patient records?",
-    answer:
-      "Delete duplicated records after identifying them.",
-  },
-  {
-    question: "How secure is the information shared in the system?",
-    answer:
-      "Prevent sharing passwords to protect patient data.",
-  },
-  {
-    question: "How do you query patient records?",
-    answer:
-      "Using an ID Number / Passport number / Birth Certificate number or Phone number.",
-  },
-  {
     question: "What are the side effects of vaccination?",
     answer:
       "Pain, swelling at site of injection, slight fever, nausea, mild headaches.",
@@ -83,6 +48,7 @@ const faqs = [
       "Yes.",
   },
 ]
+
 
 export default function FAQs() {
   return (

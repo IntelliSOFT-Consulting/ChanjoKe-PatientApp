@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import MOHLogo from '../assets/nav-logo.png';
 import TextInput from '../components/TextInput';
 import { Link } from 'react-router-dom';
@@ -5,11 +6,33 @@ import  { useNavigate } from 'react-router-dom';
 
 function Registration() {
   const navigate = useNavigate()
+  const [registrationData, setRegistrationData] = useState({
+    idType: '',
+    idNumber: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+  })
+
+  const handleChange = (name, value) => {
+    setRegistrationData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
 
   const logUserIn = () => {
     localStorage.setItem('token', 'distoken')
     navigate("/")
   }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+
+    navigate("/")
+
+    // Call API endpoint to get token
+  };
 
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-32">
@@ -21,7 +44,7 @@ function Registration() {
 
         <h1 className='text-4xl text-[#163C94] text-center'>Self Registration</h1>
 
-        <form className='mt-5'>
+        <form className='mt-5 w-full max-w-64 px-40' onSubmit={handleSubmit}>
 
           <div>
             <select
@@ -40,6 +63,10 @@ function Registration() {
             inputType="number"
             inputName="idNumber"
             inputId="idNumber"
+            leadingIcon="true"
+            inputValue={registrationData.idNumber}
+            onInputChange={(value) => handleChange("idNumber", value)}
+            leadingIconName="branding_watermark"
             inputPlaceholder="ID Number"/>
 
           <br />
@@ -48,6 +75,10 @@ function Registration() {
             inputType="email"
             inputName="email"
             inputId="email"
+            leadingIcon="true"
+            inputValue={registrationData.email}
+            onInputChange={(value) => handleChange("email", value)}
+            leadingIconName="mail"
             inputPlaceholder="Email"/>
 
           <br />
@@ -57,6 +88,12 @@ function Registration() {
             inputName="password"
             autocomplete="new_password"
             inputId="password"
+            leadingIcon="true"
+            trailingIcon="true"
+            trailingIconName="visibility"
+            inputValue={registrationData.password}
+            onInputChange={(value) => handleChange("password", value)}
+            leadingIconName="lock"
             inputPlaceholder="Password"/>
 
           <br />
@@ -66,16 +103,16 @@ function Registration() {
             inputName="confirm_password"
             autocomplete="new_password"
             inputId="confirm_password"
+            leadingIcon="true"
+            trailingIcon="true"
+            trailingIconName="visibility"
+            inputValue={registrationData.confirmPassword}
+            onInputChange={(value) => handleChange("confirmPassword", value)}
+            leadingIconName="lock"
             inputPlaceholder="Confirm Password"/>
 
           <div className="mt-6 grid grid-cols-2 gap-4">
-            <a
-              href="#"
-              className="flex w-full items-center justify-center gap-3 rounded-md bg-[#4C7DE8] px-3 py-3 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1D9BF0]">
-              <span className="text-sm font-semibold leading-6">
-                Sign up with eCitizen
-              </span>
-            </a>
+            <div></div>
             <a
               onClick={logUserIn}
               className="flex w-full items-center justify-center gap-3 rounded-md bg-[#163C94] px-3 py-3 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#24292F]">
