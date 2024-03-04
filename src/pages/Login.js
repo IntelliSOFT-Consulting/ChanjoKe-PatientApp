@@ -2,7 +2,6 @@ import MOHLogo from '../assets/nav-logo.png'
 import TextInput from '../components/TextInput'
 import { Link, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
-// import  { useNavigate } from 'react-router-dom'
 import UsePostRequest from '../api/UsePostRequest'
 
 export default function Login() {
@@ -10,6 +9,7 @@ export default function Login() {
     idNumber: '',
     password: '',
   });
+  const [passwordVisible, setPasswordVisibility] = useState(false)
 
   const navigation = useNavigate()
 
@@ -53,9 +53,7 @@ export default function Login() {
 
         <h1 className='text-4xl text-[#163C94] text-center'>Login to your account</h1>
 
-        <p>{authData.idNumber}</p>
-
-        <form className='mt-5' onSubmit={handleSubmit}>
+        <form className='mt-10 w-full max-w-64 px-40' onSubmit={handleSubmit}>
           <TextInput
             inputType="text"
             inputName="idNumber"
@@ -69,13 +67,16 @@ export default function Login() {
           <br />
 
           <TextInput
-            inputType="password"
+            inputType={passwordVisible ? 'text' : 'password'}
             inputName="password"
             inputId="password"
             leadingIcon="true"
             inputValue={authData.password}
             onInputChange={(value) => handleChange("password", value)}
             leadingIconName="lock"
+            trailingIcon="true"
+            onTrailingIconClick={() => setPasswordVisibility(!!passwordVisible)}
+            trailingIconName="visibility"
             inputPlaceholder="Password"/>
 
           <div className='text-right mx-10 text-[#707070] mt-3'>
@@ -83,13 +84,7 @@ export default function Login() {
           </div>
 
           <div className="mt-6 grid grid-cols-2 gap-4">
-            <a
-              href="#"
-              className="flex w-full items-center justify-center gap-3 rounded-md bg-[#4C7DE8] px-3 py-3 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1D9BF0]">
-              <span className="text-sm font-semibold leading-6">
-                Login with eCitizen
-              </span>
-            </a>
+            <div></div>
             <button
               type="submit"
               className="flex w-full items-center justify-center gap-3 rounded-md bg-[#163C94] px-3 py-3 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#24292F]">
