@@ -35,7 +35,7 @@ function Registration() {
   };
 
   return (
-    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-32">
+    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-5 md:mt-32">
       <div className="mx-auto max-w-3xl">
         <img
           className="h-24 mx-auto"
@@ -44,7 +44,7 @@ function Registration() {
 
         <h1 className='text-4xl text-[#163C94] text-center'>Self Registration</h1>
 
-        <form className='mt-5 w-full max-w-64 px-40' onSubmit={handleSubmit}>
+        <form className='mt-5 w-full max-w-64 md:px-40' onSubmit={handleSubmit}>
 
           <div>
             <select
@@ -57,6 +57,18 @@ function Registration() {
             </select>
           </div>
 
+          <br />
+
+          <TextInput
+            inputType="number"
+            inputName="systemID"
+            inputId="systemID"
+            leadingIcon="true"
+            inputValue={registrationData.systemID}
+            onInputChange={(value) => handleChange("systemID", value)}
+            leadingIconName="remember_me"
+            inputPlaceholder="ID given by provider"/>
+          
           <br />
 
           <TextInput
@@ -122,7 +134,7 @@ function Registration() {
             </a>
           </div>
 
-          <p className='text-center mt-3'>Already have an account? <Link className="text-[#163C94]" to="/auth">Login here</Link></p>
+          <p className='text-center mt-3 mb-5'>Already have an account? <Link className="text-[#163C94]" to="/auth">Login here</Link></p>
         </form>
       </div>
     </div>

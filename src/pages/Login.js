@@ -2,7 +2,7 @@ import MOHLogo from '../assets/nav-logo.png'
 import TextInput from '../components/TextInput'
 import { Link, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
-import UsePostRequest from '../api/UsePostRequest'
+// import UsePostRequest from '../api/UsePostRequest'
 
 export default function Login() {
   const [authData, setAuthData] = useState({
@@ -26,25 +26,25 @@ export default function Login() {
     navigation("/")
 
     // Do something with authData, e.g., call an API
-    console.log(authData);
+    // console.log(authData);
 
-    try {
-      const { data, loading, error } = await UsePostRequest('auth/client/login', {
-        idNumber: authData.idNumber,
-        password: authData.password,
-      });
+    // try {
+    //   const { data, loading, error } = await UsePostRequest('auth/client/login', {
+    //     idNumber: authData.idNumber,
+    //     password: authData.password,
+    //   });
 
-      console.log({ data, loading, error });
+    //   console.log({ data, loading, error });
 
-      // Reset the form if needed
-      setAuthData({ idNumber: '', password: '' });
-    } catch (error) {
-      console.error('Error in usePostRequest:', error);
-    }
+    //   // Reset the form if neededn
+    //   setAuthData({ idNumber: '', password: '' });
+    // } catch (error) {
+    //   console.error('Error in usePostRequest:', error);
+    // }
   };
 
   return (
-    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-32">
+    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8  mt-5 md:mt-32">
       <div className="mx-auto max-w-3xl">
         <img
           className="h-24 mx-auto"
@@ -53,7 +53,7 @@ export default function Login() {
 
         <h1 className='text-4xl text-[#163C94] text-center'>Login to your account</h1>
 
-        <form className='mt-10 w-full max-w-64 px-40' onSubmit={handleSubmit}>
+        <form className='mt-10 w-full max-w-64 md:px-40' onSubmit={handleSubmit}>
           <TextInput
             inputType="text"
             inputName="idNumber"
@@ -94,7 +94,7 @@ export default function Login() {
             </button>
           </div>
 
-          <p className='text-center mt-3'>Don't have an account? <Link className="text-[#163C94]" to="/auth/registration">Sign up here</Link></p>
+          <p className='text-center mt-3 mb-5'>Don't have an account? <Link className="text-[#163C94]" to="/auth/registration">Sign up here</Link></p>
         </form>
       </div>
     </div>
