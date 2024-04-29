@@ -3,6 +3,7 @@ import TextInput from '../components/TextInput'
 import { Link, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 // import UsePostRequest from '../api/UsePostRequest'
+import { useApiRequest } from '../api/useApi'
 
 export default function Login() {
   const [authData, setAuthData] = useState({
@@ -12,6 +13,7 @@ export default function Login() {
   const [passwordVisible, setPasswordVisibility] = useState(false)
 
   const navigation = useNavigate()
+  const { post, get } = useApiRequest()
 
   const handleChange = (name, value) => {
     setAuthData((prevData) => ({
@@ -23,24 +25,24 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    navigation("/")
+    try {
+      const results = await post('/auth/client/login', authData)
 
-    // Do something with authData, e.g., call an API
-    // console.log(authData);
+      if (!results) {
+        // Error message is shown
+      } else {
+        localStorage.setItem('auth', JSON.stringify(results))
 
-    // try {
-    //   const { data, loading, error } = await UsePostRequest('auth/client/login', {
-    //     idNumber: authData.idNumber,
-    //     password: authData.password,
-    //   });
+        const userData = await get('/auth/client/me')
 
-    //   console.log({ data, loading, error });
+        localStorage.setItem('user', JSON.stringify(userData?.user))
 
-    //   // Reset the form if neededn
-    //   setAuthData({ idNumber: '', password: '' });
-    // } catch (error) {
-    //   console.error('Error in usePostRequest:', error);
-    // }
+        navigation("/")
+      }
+    } catch (e) {
+      console.log({ e })
+    }
+
   };
 
   return (

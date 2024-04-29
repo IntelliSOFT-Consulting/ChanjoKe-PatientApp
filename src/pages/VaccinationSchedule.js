@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import Table from '../components/Table';
 import moment from 'moment';
+import { useApiRequest } from '../api/useApi';
 
 const tableHeaders = [
   { title: 'Dose', classes: 'py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6' },
@@ -10,28 +11,30 @@ const tableHeaders = [
 
 export default function VaccinationSchedule() {
 
-  const [vaccineSchedules, setVaccineSchedules] = useState([
-    { date: 'Tue, March 30, 2023', vaccine: 'Oxford/AstraZeneca', dose: 1 },
-  ])
+  const { get } = useApiRequest()
+
+  const [vaccineSchedules, setVaccineSchedules] = useState([])
+
+  const fetchUserSchedule = async () => {
+    const user = JSON.parse(localStorage.getItem('user'))
+    const userSchedule = await get(`/hapi/fhir/ImmunizationRecommendation?patient=Patient/${user?.fhirPatientId}`)
+
+    const recommendations = userSchedule?.entry?.[0]?.resource?.recommendation
+
+    console.log({ recommendations })
+
+    if (Array.isArray(recommendations)) {
+      const vaccineSchedules = recommendations.map((schedule) => ({
+        dose: schedule?.doseNumberPositiveInt,
+        title: schedule?.vaccineCode?.[0]?.text,
+        schedule: moment(schedule?.dateCriterion?.[0]?.value).format('DD-MM-YYYY'),
+      }))
+      setVaccineSchedules(vaccineSchedules)
+    }
+  }
 
   useEffect(() => {
-    fetch('https://chanjoke.intellisoftkenya.com/hapi/fhir/ImmunizationRecommendation')
-      .then((res) => {
-        const data = res.json()
-        return data
-      })
-      .then((data) => {
-        const schedules = data.entry.map((schedule) => ({
-          title: schedule.resource.recommendation[0].contraindicatedVaccineCode[0].text,
-          dose: schedule.resource.recommendation[0].doseNumberString,
-          schedule: moment(schedule.resource.date).format('ddd MMM D YYYY')
-        }))
-        console.log({ schedules })
-        // setVaccineSchedules(schedules)
-      })
-      .catch((error) => {
-        console.log({ error })
-      })
+    fetchUserSchedule()
   }, [])
 
   return (

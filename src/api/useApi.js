@@ -7,6 +7,7 @@ const server = axios.create({
   headers: {
     'Cache-Control': 'no-cache',
     'Content-Type': 'application/json',
+    'Accept': '*',
   }
 })
 
@@ -31,7 +32,12 @@ export const useApiRequest = () => {
 
   const get = async (url) => {
     try {
-      const response = await server.get(url, { signal: abortController.signal })
+      const response = await server.get(url, {
+        signal: abortController.signal,
+        headers: {
+          'Authorization': `Bearer ${JSON.parse(localStorage.getItem('auth'))?.access_token}`
+        }
+      })
       return response.data
     } catch (error) {
       if (error?.response?.status === 401) {
@@ -45,6 +51,9 @@ export const useApiRequest = () => {
     try {
       const response = await server.post(url, data, {
         signal: abortController.signal,
+        headers: {
+          'Authorization': `Bearer ${JSON.parse(localStorage.getItem('auth'))?.access_token}`
+        }
       })
       return response.data
     } catch (error) {
