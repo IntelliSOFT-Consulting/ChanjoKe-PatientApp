@@ -72,7 +72,9 @@ function Home() {
           vaccines={vaccineCount}/>
       </div>
 
-      <br />
+      <br className='hidden md:block' />
+
+      <h3 className='sm:hidden font-bold text-2xl'>Vaccination Appointments</h3>
 
       <div className="sm:hidden mt-5">
         {appointments.map((result) => (
