@@ -2,7 +2,8 @@ import MOHLogo from '../assets/nav-logo.png'
 import TextInput from '../components/TextInput'
 import { Link, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
-import UsePostRequest from '../api/UsePostRequest'
+// import UsePostRequest from '../api/UsePostRequest'
+import { useApiRequest } from '../api/useApi'
 
 export default function Login() {
   const [authData, setAuthData] = useState({
@@ -12,6 +13,7 @@ export default function Login() {
   const [passwordVisible, setPasswordVisibility] = useState(false)
 
   const navigation = useNavigate()
+  const { post, get } = useApiRequest()
 
   const handleChange = (name, value) => {
     setAuthData((prevData) => ({
@@ -23,28 +25,28 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    navigation("/")
-
-    // Do something with authData, e.g., call an API
-    console.log(authData);
-
     try {
-      const { data, loading, error } = await UsePostRequest('auth/client/login', {
-        idNumber: authData.idNumber,
-        password: authData.password,
-      });
+      const results = await post('/auth/client/login', authData)
 
-      console.log({ data, loading, error });
+      if (!results) {
+        // Error message is shown
+      } else {
+        localStorage.setItem('auth', JSON.stringify(results))
 
-      // Reset the form if needed
-      setAuthData({ idNumber: '', password: '' });
-    } catch (error) {
-      console.error('Error in usePostRequest:', error);
+        const userData = await get('/auth/client/me')
+
+        localStorage.setItem('user', JSON.stringify(userData?.user))
+
+        navigation("/")
+      }
+    } catch (e) {
+      console.log({ e })
     }
+
   };
 
   return (
-    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-32">
+    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8  mt-5 md:mt-32">
       <div className="mx-auto max-w-3xl">
         <img
           className="h-24 mx-auto"
@@ -53,7 +55,7 @@ export default function Login() {
 
         <h1 className='text-4xl text-[#163C94] text-center'>Login to your account</h1>
 
-        <form className='mt-10 w-full max-w-64 px-40' onSubmit={handleSubmit}>
+        <form className='mt-10 w-full max-w-64 md:px-40' onSubmit={handleSubmit}>
           <TextInput
             inputType="text"
             inputName="idNumber"
@@ -94,7 +96,7 @@ export default function Login() {
             </button>
           </div>
 
-          <p className='text-center mt-3'>Don't have an account? <Link className="text-[#163C94]" to="/auth/registration">Sign up here</Link></p>
+          <p className='text-center mt-3 mb-5'>Don't have an account? <Link className="text-[#163C94]" to="/auth/registration">Sign up here</Link></p>
         </form>
       </div>
     </div>

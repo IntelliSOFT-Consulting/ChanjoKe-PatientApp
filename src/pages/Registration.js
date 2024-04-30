@@ -3,15 +3,18 @@ import MOHLogo from '../assets/nav-logo.png';
 import TextInput from '../components/TextInput';
 import { Link } from 'react-router-dom';
 import  { useNavigate } from 'react-router-dom';
+import { useApiRequest } from '../api/useApi'
+import { message } from 'antd'
 
 function Registration() {
   const navigate = useNavigate()
+  const { post, get } = useApiRequest()
   const [registrationData, setRegistrationData] = useState({
-    idType: '',
     idNumber: '',
     email: '',
     password: '',
     confirmPassword: '',
+    secretCode: '',
   })
 
   const handleChange = (name, value) => {
@@ -21,21 +24,27 @@ function Registration() {
     }));
   };
 
-  const logUserIn = () => {
-    localStorage.setItem('token', 'distoken')
-    navigate("/")
-  }
+  const logUserIn = async (e) => {
 
-  const handleSubmit = async (e) => {
     e.preventDefault()
 
-    navigate("/")
+    try {
+      const results = await post('/auth/client/register', registrationData)
 
-    // Call API endpoint to get token
-  };
+      if (!results) {
+        // Error message is shown
+      } else {
+        message.success('Registration successful, log in with the credentials used')
+
+        navigate("/auth")
+      }
+    } catch (e) {
+      console.log({ e })
+    }
+  }
 
   return (
-    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-32">
+    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-5 md:mt-32">
       <div className="mx-auto max-w-3xl">
         <img
           className="h-24 mx-auto"
@@ -44,9 +53,9 @@ function Registration() {
 
         <h1 className='text-4xl text-[#163C94] text-center'>Self Registration</h1>
 
-        <form className='mt-5 w-full max-w-64 px-40' onSubmit={handleSubmit}>
+        <form className='mt-5 w-full max-w-64 md:px-40'>
 
-          <div>
+          {/* <div>
             <select
               id="location"
               name="location"
@@ -55,12 +64,22 @@ function Registration() {
               <option>Identification Number</option>
               <option>Passport Number</option>
             </select>
-          </div>
+          </div> */}
 
+          <TextInput
+            inputType="text"
+            inputName="secretCode"
+            inputId="secretCode"
+            leadingIcon="true"
+            inputValue={registrationData.secretCode}
+            onInputChange={(value) => handleChange("secretCode", value)}
+            leadingIconName="remember_me"
+            inputPlaceholder="ID given by provider"/>
+          
           <br />
 
           <TextInput
-            inputType="number"
+            inputType="text"
             inputName="idNumber"
             inputId="idNumber"
             leadingIcon="true"
@@ -122,7 +141,7 @@ function Registration() {
             </a>
           </div>
 
-          <p className='text-center mt-3'>Already have an account? <Link className="text-[#163C94]" to="/auth">Login here</Link></p>
+          <p className='text-center mt-3 mb-5'>Already have an account? <Link className="text-[#163C94]" to="/auth">Login here</Link></p>
         </form>
       </div>
     </div>
