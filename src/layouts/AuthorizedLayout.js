@@ -113,7 +113,7 @@ const SideNav = () => {
           {/* Sidebar component, swap this element with another sidebar if you like */}
           <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white">
             <div className="grid grid-cols-8 h-28 shrink-0 auto-cols-fr items-center">
-              <div className="bg-[#163C94] col-span-7 h-full text-white text-4xl text-center pt-8">ChanjoKE</div>
+              <div className="bg-[#163C94] col-span-7 h-full text-white text-4xl text-center pt-8">OpenCHANJO</div>
               <div className="grid grid-cols-3 gap-1 h-full bg-white">
                 <div className="basis-1/4 bg-black"></div>
                 <div className="basis-1/4 bg-[#BB0100]"></div>

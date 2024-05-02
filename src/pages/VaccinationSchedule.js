@@ -21,8 +21,6 @@ export default function VaccinationSchedule() {
 
     const recommendations = userSchedule?.entry?.[0]?.resource?.recommendation
 
-    console.log({ recommendations })
-
     if (Array.isArray(recommendations)) {
       const vaccineSchedules = recommendations.map((schedule) => ({
         dose: schedule?.doseNumberPositiveInt,
@@ -43,33 +41,37 @@ export default function VaccinationSchedule() {
 
       <h3 className='sm:hidden font-bold text-2xl'>Vaccination Schedule</h3>
 
-      <div className="sm:hidden mt-5">
-        {vaccineSchedules.map((result) => (
-          <div key={result.id} className='w-full grid grid-cols-5 gap-3 border border-1 border-gray-200'>
-            <div className="py-5 pr-6 col-span-4">
-              <div className="text-sm pl-5 leading-6 text-gray-900">{result.title}</div>
-              <div className="mt-1 pl-5 text-xs leading-5 text-gray-800">{result.schedule} - Dose: {result.dose}</div>
-            </div>
-            <div className="py-5 max-w-auto right-5">
-              <div className="flex">
-                <a
-                  href={`/client-details/${result.id}`}
-                  className="text-sm font-medium leading-6 text-indigo-600 hover:text-indigo-500"
-                >
-                  View
-                </a>
+      {!vaccineSchedules.length && <div className='text-center font-bold mt-5'>No Schedules found for user</div>}
+
+      {vaccineSchedules.length > 0 && <>
+        <div className="sm:hidden mt-5">
+          {vaccineSchedules.map((result) => (
+            <div key={result.id} className='w-full grid grid-cols-5 gap-3 border border-1 border-gray-200'>
+              <div className="py-5 pr-6 col-span-4">
+                <div className="text-sm pl-5 leading-6 text-gray-900">{result.title}</div>
+                <div className="mt-1 pl-5 text-xs leading-5 text-gray-800">{result.schedule} - Dose: {result.dose}</div>
+              </div>
+              <div className="py-5 max-w-auto right-5">
+                <div className="flex">
+                  <a
+                    href={`/client-details/${result.id}`}
+                    className="text-sm font-medium leading-6 text-indigo-600 hover:text-indigo-500"
+                  >
+                    View
+                  </a>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
 
-      <div className='hidden md:block'>
-        <Table
-          tableTitle="Vaccination Schedule"
-          theaders={tableHeaders}
-          data={vaccineSchedules} />
-      </div>
+        <div className='hidden md:block'>
+          <Table
+            tableTitle="Vaccination Schedule"
+            theaders={tableHeaders}
+            data={vaccineSchedules} />
+        </div></>
+      } 
     </>
   )
 }
