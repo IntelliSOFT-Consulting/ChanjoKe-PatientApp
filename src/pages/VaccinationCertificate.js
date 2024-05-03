@@ -9,27 +9,9 @@ const tableHeaders = [
 
 export default function VaccinationCertificate() {
   const [vaccineCertificates, setVaccineCertificates] = useState([
-    { date: '30-12-2023', vaccine: 'Oxford/AstraZeneca', dose: '1' },
+    { date: '30-12-2023', vaccine: 'Oxford/AstraZeneca', action: 'Download' },
   ])
 
-  useEffect(() => {
-    // fetch('https://chanjoke.intellisoftkenya.com/hapi/fhir/Immunization')
-    //   .then((res) => {
-    //     const data = res.json()
-    //     return data
-    //   })
-    //   .then((data) => {
-    //     const certificates = data.entry.map((certificate, index) => ({
-    //       number: index + 1,
-    //       title: certificate.resource.vaccineCode.text,
-    //       action: 'Download'
-    //     }))
-    //     setVaccineCertificates(certificates)
-    //   })
-    //   .catch((error) => {
-    //     console.log({ error })
-    //   })
-  }, [])
   return (
     <>
       <br className='hidden md:block' />
