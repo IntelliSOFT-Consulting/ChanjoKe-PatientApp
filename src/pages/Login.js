@@ -2,7 +2,7 @@ import MOHLogo from '../assets/nav-logo.png'
 import TextInput from '../components/TextInput'
 import { Link, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
-// import UsePostRequest from '../api/UsePostRequest'
+import { Button } from 'antd'
 import { useApiRequest } from '../api/useApi'
 
 export default function Login() {
@@ -11,6 +11,7 @@ export default function Login() {
     password: '',
   });
   const [passwordVisible, setPasswordVisibility] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   const navigation = useNavigate()
   const { post, get } = useApiRequest()
@@ -24,6 +25,7 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    setLoading(true)
 
     try {
       const results = await post('/auth/client/login', authData)
@@ -42,6 +44,8 @@ export default function Login() {
     } catch (e) {
       console.log({ e })
     }
+
+    setLoading(false)
 
   };
 
@@ -87,13 +91,15 @@ export default function Login() {
 
           <div className="mt-6 grid grid-cols-2 gap-4">
             <div></div>
-            <button
+            <Button
               type="submit"
-              className="flex w-full items-center justify-center gap-3 rounded-md bg-[#163C94] px-3 py-3 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#24292F]">
-              <span className="text-sm font-semibold leading-6">
+              htmlType="submit"
+              loading={loading}
+              disabled={loading}
+              className="flex w-full items-center justify-center gap-3 rounded-md bg-[#163C94] px-3 py-3 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#24292F]"
+              size="large">
                 Login
-              </span>
-            </button>
+              </Button>
           </div>
 
           <p className='text-center mt-3 mb-5'>Don't have an account? <Link className="text-[#163C94]" to="/auth/registration">Sign up here</Link></p>

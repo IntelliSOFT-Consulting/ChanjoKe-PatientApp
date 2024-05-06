@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import  { useNavigate } from 'react-router-dom';
 import { useApiRequest } from '../api/useApi'
 import { message } from 'antd'
+import { Button } from 'antd'
 
 function Registration() {
   const navigate = useNavigate()
@@ -16,6 +17,7 @@ function Registration() {
     confirmPassword: '',
     secretCode: '',
   })
+  const [loading, setLoading] = useState(false)
 
   const handleChange = (name, value) => {
     setRegistrationData((prevData) => ({
@@ -27,6 +29,7 @@ function Registration() {
   const logUserIn = async (e) => {
 
     e.preventDefault()
+    setLoading(true)
 
     try {
       const results = await post('/auth/client/register', registrationData)
@@ -41,6 +44,8 @@ function Registration() {
     } catch (e) {
       console.log({ e })
     }
+
+    setLoading(false)
   }
 
   return (
@@ -132,13 +137,17 @@ function Registration() {
 
           <div className="mt-6 grid grid-cols-2 gap-4">
             <div></div>
-            <a
+
+            <Button
+              type="submit"
+              htmlType="submit"
               onClick={logUserIn}
-              className="flex w-full items-center justify-center gap-3 rounded-md bg-[#163C94] px-3 py-3 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#24292F]">
-              <span className="text-sm font-semibold leading-6">
-                Submit
-              </span>
-            </a>
+              loading={loading}
+              disabled={loading}
+              className="flex w-full items-center justify-center gap-3 rounded-md bg-[#163C94] px-3 py-3 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#24292F]"
+              size="large">
+                Register
+              </Button>
           </div>
 
           <p className='text-center mt-3 mb-5'>Already have an account? <Link className="text-[#163C94]" to="/auth">Login here</Link></p>

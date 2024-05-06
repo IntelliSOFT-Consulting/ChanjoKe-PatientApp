@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import ChanjoKE from '../assets/chanjoke-img.png'
+import ChanjoKE from '../assets/login-bg.png'
 
 const Layout = () => {
   return (
