@@ -7,6 +7,7 @@ import UserDetailsForm from './UserDetailsForm'
 const classNames = (...classes) => classes.filter(Boolean).join(' ')
 
 export default function ProfileDropdown() {
+  const user = JSON.parse(localStorage.getItem('user'))
   const [isModalOpen, setIsModalOpen] = useState(false);
   const showModal = () => {
     setIsModalOpen(true);
@@ -41,7 +42,7 @@ export default function ProfileDropdown() {
             <span className="sr-only">Open user menu</span>
             <img
               className="h-8 w-8 rounded-full"
-              src="https://ui-avatars.com/api/?name=John+Doe&background=163C94&color=fff"
+              src={`https://ui-avatars.com/api/?name=${user.firstName}+${user.lastName}&background=163C94&color=fff`}
               alt=""
             />
           </Menu.Button>
