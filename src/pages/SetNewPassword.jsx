@@ -93,10 +93,6 @@ export default function SetNewPassword() {
             trailingIconName="visibility"
             inputPlaceholder="Password"/>
 
-          <div className='text-right mx-10 text-[#707070] mt-3'>
-            <Link to="/registration">Forgot password?</Link>
-          </div>
-
           <div className="mt-6 grid grid-cols-2 gap-4">
             <div></div>
             <Button
@@ -106,11 +102,9 @@ export default function SetNewPassword() {
               disabled={loading}
               className="flex w-full items-center justify-center gap-3 rounded-md bg-[#163C94] px-3 py-3 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#24292F]"
               size="large">
-                Login
+                Reset Password
               </Button>
           </div>
-
-          <p className='text-center mt-3 mb-5'>Don't have an account? <Link className="text-[#163C94]" to="/auth/registration">Sign up here</Link></p>
         </form>
       </div>
     </div>
