@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import Stats from '../components/Stats';
 import Table from '../components/Table';
+import { useNavigate } from 'react-router-dom';
 
 const appointments = [
   { date: 'Tue, March 30, 2023', vaccine: 'Oxford/AstraZeneca', dose: 1, status: 'NA' },
@@ -14,15 +15,20 @@ const tableHeaders = [
 ]
 
 function Home() {
-
-  const [ appointment, setAppointments] = useState([
-    {}
-  ])
   const [ appointmentCount, setAppointmentCount ] = useState(0)
   const [ certificateCount, setCertificateCount ] = useState(0)
   const [ vaccineCount, setVaccineCount ] = useState(0)
 
+  const navigate = useNavigate()
+
   useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('user'))
+
+    if (!user || !Object.keys(user).length) {
+      navigate("/auth")
+    }
+
+    console.log({ user })
     fetch('https://chanjoke.intellisoftkenya.com/hapi/fhir/Appointment')
       .then((res) => {
         const data = res.json()

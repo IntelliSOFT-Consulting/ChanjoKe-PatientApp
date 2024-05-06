@@ -19,6 +19,10 @@ export default function ProfileDropdown() {
     setIsModalOpen(false);
   };
 
+  function logUserOut() {
+    localStorage.clear()
+  }
+
   return (
     <>
       {/* Profile Modal */}
@@ -70,6 +74,7 @@ export default function ProfileDropdown() {
               {({ active }) => (
                 <Link
                   to="/auth"
+                  onClick={logUserOut()}
                   className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}>
                   Logout
                 </Link>
