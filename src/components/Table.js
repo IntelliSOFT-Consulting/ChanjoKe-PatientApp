@@ -3,11 +3,11 @@ export default function Table(props) {
   const handleDownload = () => {}
   return (
     <div className="border-b border-gray-200 rounded-lg shadow bg-white px-4 py-5 sm:px-6">
-      <div className="sm:flex sm:items-center">
+      {props.tableTitle && <div className="sm:flex sm:items-center">
         <h1 className="font-semibold text-1xl">
           {props.tableTitle}
         </h1>
-      </div>
+      </div>}
       <div className="mt-8 flow-root mb-10">
         <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
