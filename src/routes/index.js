@@ -8,6 +8,8 @@ import Login from '../pages/Login'
 import Registration from '../pages/Registration'
 import UnauthorizedLayout from '../layouts/UnauthorizedLayout'
 import FAQs from '../pages/FAQs'
+import ResetPassword from '../pages/ResetPassword'
+import SetNewPassword from '../pages/SetNewPassword'
 
 const router = createBrowserRouter([
   {
@@ -45,6 +47,14 @@ const router = createBrowserRouter([
       {
         path: 'registration',
         element: <Registration />
+      },
+      {
+        path: 'reset-password',
+        element: <ResetPassword />
+      },
+      {
+        path: 'set-password',
+        element: <SetNewPassword />
       }
     ]
   }
