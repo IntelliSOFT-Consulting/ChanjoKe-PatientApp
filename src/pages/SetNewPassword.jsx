@@ -2,11 +2,12 @@ import MOHLogo from '../assets/nav-logo.png'
 import TextInput from '../components/TextInput'
 import { Link, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
-import { Button } from 'antd'
+import { Button, message } from 'antd'
 import { useApiRequest } from '../api/useApi'
 
-export default function Login() {
+export default function SetNewPassword() {
   const [authData, setAuthData] = useState({
+    resetCode: '',
     idNumber: '',
     password: '',
   });
@@ -14,7 +15,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false)
 
   const navigation = useNavigate()
-  const { post, get } = useApiRequest()
+  const { post } = useApiRequest()
 
   const handleChange = (name, value) => {
     setAuthData((prevData) => ({
@@ -28,18 +29,14 @@ export default function Login() {
     setLoading(true)
 
     try {
-      const results = await post('/auth/client/login', authData)
+      const results = await post('/auth/client/reset-password', authData)
 
       if (!results) {
         // Error message is shown
       } else {
-        localStorage.setItem('auth', JSON.stringify(results))
+        message.info('Password reset successfully, you can login')
 
-        const userData = await get('/auth/client/me')
-
-        localStorage.setItem('user', JSON.stringify(userData?.user))
-
-        navigation("/")
+        navigation("/auth/login")
       }
     } catch (e) {
       console.log({ e })
@@ -57,9 +54,20 @@ export default function Login() {
           src={MOHLogo}
           alt="Ministry of Health"/>
 
-        <h1 className='text-4xl text-[#163C94] text-center'>Login to your account</h1>
+        <h1 className='text-4xl text-[#163C94] text-center'>Reset your password</h1>
 
         <form className='mt-10 w-full max-w-64 md:px-40' onSubmit={handleSubmit}>
+        <TextInput
+            inputType="text"
+            inputName="resetCode"
+            inputId="resetCode"
+            inputValue={authData.resetCode}
+            onInputChange={(value) => handleChange("resetCode", value)}
+            leadingIcon="true"
+            leadingIconName="mail"
+            inputPlaceholder="Reset Code"/>
+
+            <br />
           <TextInput
             inputType="text"
             inputName="idNumber"
@@ -86,7 +94,7 @@ export default function Login() {
             inputPlaceholder="Password"/>
 
           <div className='text-right mx-10 text-[#707070] mt-3'>
-            <Link to="/auth/reset-password">Forgot password?</Link>
+            <Link to="/registration">Forgot password?</Link>
           </div>
 
           <div className="mt-6 grid grid-cols-2 gap-4">

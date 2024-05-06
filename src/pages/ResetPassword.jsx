@@ -5,16 +5,15 @@ import { useState } from 'react'
 import { Button } from 'antd'
 import { useApiRequest } from '../api/useApi'
 
-export default function Login() {
+export default function ResetPassword() {
   const [authData, setAuthData] = useState({
     idNumber: '',
-    password: '',
+    email: '',
   });
-  const [passwordVisible, setPasswordVisibility] = useState(false)
   const [loading, setLoading] = useState(false)
 
   const navigation = useNavigate()
-  const { post, get } = useApiRequest()
+  const { get } = useApiRequest()
 
   const handleChange = (name, value) => {
     setAuthData((prevData) => ({
@@ -28,18 +27,12 @@ export default function Login() {
     setLoading(true)
 
     try {
-      const results = await post('/auth/client/login', authData)
+      const results = await get(`/auth/client/reset-password?idNumber=${authData.idNumber}&email=${authData.email}`)
 
       if (!results) {
         // Error message is shown
       } else {
-        localStorage.setItem('auth', JSON.stringify(results))
-
-        const userData = await get('/auth/client/me')
-
-        localStorage.setItem('user', JSON.stringify(userData?.user))
-
-        navigation("/")
+        navigation("/auth/set-password")
       }
     } catch (e) {
       console.log({ e })
@@ -57,7 +50,7 @@ export default function Login() {
           src={MOHLogo}
           alt="Ministry of Health"/>
 
-        <h1 className='text-4xl text-[#163C94] text-center'>Login to your account</h1>
+        <h1 className='text-4xl text-[#163C94] text-center'>Reset your password</h1>
 
         <form className='mt-10 w-full max-w-64 md:px-40' onSubmit={handleSubmit}>
           <TextInput
@@ -73,21 +66,14 @@ export default function Login() {
           <br />
 
           <TextInput
-            inputType={passwordVisible ? 'text' : 'password'}
-            inputName="password"
-            inputId="password"
+            inputType="email"
+            inputName="email"
+            inputId="email"
             leadingIcon="true"
-            inputValue={authData.password}
-            onInputChange={(value) => handleChange("password", value)}
-            leadingIconName="lock"
-            trailingIcon="true"
-            onTrailingIconClick={() => setPasswordVisibility(!!passwordVisible)}
-            trailingIconName="visibility"
-            inputPlaceholder="Password"/>
-
-          <div className='text-right mx-10 text-[#707070] mt-3'>
-            <Link to="/auth/reset-password">Forgot password?</Link>
-          </div>
+            inputValue={authData.email}
+            onInputChange={(value) => handleChange("email", value)}
+            leadingIconName="mail"
+            inputPlaceholder="Email"/>
 
           <div className="mt-6 grid grid-cols-2 gap-4">
             <div></div>
@@ -98,11 +84,10 @@ export default function Login() {
               disabled={loading}
               className="flex w-full items-center justify-center gap-3 rounded-md bg-[#163C94] px-3 py-3 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#24292F]"
               size="large">
-                Login
+                Request Reset
               </Button>
           </div>
 
-          <p className='text-center mt-3 mb-5'>Don't have an account? <Link className="text-[#163C94]" to="/auth/registration">Sign up here</Link></p>
         </form>
       </div>
     </div>
