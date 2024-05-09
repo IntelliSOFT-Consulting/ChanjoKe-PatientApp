@@ -1,15 +1,19 @@
 import { Fragment, useState } from 'react'
 import { Menu, Transition } from '@headlessui/react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { Button, Modal } from 'antd'
 import UserDetailsForm from './UserDetailsForm'
 
 const classNames = (...classes) => classes.filter(Boolean).join(' ')
 
 export default function ProfileDropdown() {
-  const user = JSON.parse(localStorage.getItem('user'))
+  const userStorage = localStorage.getItem('user')
+  const navigate = useNavigate()
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const user = JSON.parse(userStorage)
+  
   const showModal = () => {
+    console.log('does this...')
     setIsModalOpen(true);
   };
   const handleOk = () => {
@@ -20,7 +24,9 @@ export default function ProfileDropdown() {
   };
 
   function logUserOut() {
+    console.log('cllicked')
     localStorage.clear()
+    navigate("/auth")
   }
 
   return (
@@ -32,10 +38,11 @@ export default function ProfileDropdown() {
         onOk={handleOk}
         onCancel={handleCancel}
         footer={[
-          <Button key="submit" className='bg-[#163C94] text-white' onClick={handleOk}>
-            Update Details
-          </Button>,
-        ]}>
+          // <Button key="submit" className='bg-[#163C94] text-white' onClick={handleOk}>
+          //   Update Details
+          // </Button>
+        ]}
+        >
         <UserDetailsForm />
       </Modal>
     
@@ -74,7 +81,7 @@ export default function ProfileDropdown() {
               {({ active }) => (
                 <Link
                   to="/auth"
-                  onClick={logUserOut()}
+                  onClick={logUserOut}
                   className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}>
                   Logout
                 </Link>

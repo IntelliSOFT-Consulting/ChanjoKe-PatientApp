@@ -22,13 +22,13 @@ function Home() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem('user'))
-
-    if (!user || !Object.keys(user).length) {
+    const userStorage = localStorage.getItem('user')
+    
+    if (userStorage === 'undefined' || userStorage === null || !Object.keys(userStorage).length) {
+      localStorage.clear()
       navigate("/auth")
     }
 
-    console.log({ user })
     fetch('https://chanjoke.intellisoftkenya.com/hapi/fhir/Appointment')
       .then((res) => {
         const data = res.json()

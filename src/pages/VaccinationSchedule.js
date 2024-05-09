@@ -58,12 +58,12 @@ export default function VaccinationSchedule() {
     const userSchedule = await get(`/hapi/fhir/ImmunizationRecommendation?patient=Patient/${user?.fhirPatientId}`)
 
     const userVaccines = await get(`/hapi/fhir/Immunization?patient=Patient/${user?.fhirPatientId}`)
-    const administeredVaccines = userVaccines?.entry.map((vaccine) => vaccine?.resource?.vaccineCode?.text)
+    const administeredVaccines = userVaccines?.entry?.map((vaccine) => vaccine?.resource?.vaccineCode?.text)
 
     const recommendations = userSchedule?.entry?.[0]?.resource?.recommendation
 
     const rec = recommendations.map(recommendation => {
-      if (!administeredVaccines.includes(recommendation?.vaccineCode?.[0]?.text)) {
+      if (!administeredVaccines?.includes(recommendation?.vaccineCode?.[0]?.text)) {
         return recommendation;
       }
     }).filter(Boolean);

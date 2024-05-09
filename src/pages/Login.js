@@ -1,34 +1,22 @@
 import MOHLogo from '../assets/nav-logo.png'
-import TextInput from '../components/TextInput'
+import { LockOutlined, UserOutlined, MailOutlined } from '@ant-design/icons'
 import { Link, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
-import { Button } from 'antd'
+import { Button, Input, Form, Row, Col, Alert } from 'antd'
 import { useApiRequest } from '../api/useApi'
 
 export default function Login() {
-  const [authData, setAuthData] = useState({
-    idNumber: '',
-    password: '',
-  });
-  const [passwordVisible, setPasswordVisibility] = useState(false)
   const [loading, setLoading] = useState(false)
 
   const navigation = useNavigate()
   const { post, get } = useApiRequest()
+  const [form] = Form.useForm()
 
-  const handleChange = (name, value) => {
-    setAuthData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault()
+  const handleSubmit = async (values) => {
     setLoading(true)
 
     try {
-      const results = await post('/auth/client/login', authData)
+      const results = await post('/auth/client/login', values)
 
       if (!results) {
         // Error message is shown
@@ -59,37 +47,83 @@ export default function Login() {
 
         <h1 className='text-4xl text-[#163C94] text-center'>Login to your account</h1>
 
-        <form className='mt-10 w-full max-w-64 md:px-40' onSubmit={handleSubmit}>
-          <TextInput
-            inputType="text"
-            inputName="idNumber"
-            inputId="idNumber"
-            inputValue={authData.idNumber}
-            onInputChange={(value) => handleChange("idNumber", value)}
-            leadingIcon="true"
-            leadingIconName="mail"
-            inputPlaceholder="ID or Passport Number"/>
+        {/* <Alert
+                message="Unauthorized: Incorrect credentials"
+                type="warning"
+                className='mt-4 mx-48'
+                closable
+                // onClose={onClose}
+              /> */}
 
-          <br />
+        <Form
+          layout='vertical'
+          form={form}
+          onFinish={handleSubmit}
+          className='mt-10 md:max-w-64 md:px-40'
+          autoComplete='off'>
+          <Row
+            gutter={16}
+            className='mt-5 px-5'>
+              
+              <Col
+                className='gutter-row w-full'
+                md={24}
+                sm={24}>
+                <Form.Item
+                  name="idNumber"
+                  className='w-full'
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please enter ID number',
+                    },
+                    {
+                      min: 5,
+                      message: 'ID Number is too short',
+                    },
+                  ]}>
+                    <Input
+                      size='large'
+                      placeholder='ID or Passport Number'
+                      prefix={<UserOutlined className="site-form-item-icon" />}
+                      className='rounded-md' />
+                </Form.Item> 
+              </Col>
 
-          <TextInput
-            inputType={passwordVisible ? 'text' : 'password'}
-            inputName="password"
-            inputId="password"
-            leadingIcon="true"
-            inputValue={authData.password}
-            onInputChange={(value) => handleChange("password", value)}
-            leadingIconName="lock"
-            trailingIcon="true"
-            onTrailingIconClick={() => setPasswordVisibility(!!passwordVisible)}
-            trailingIconName="visibility"
-            inputPlaceholder="Password"/>
+              <br />
 
-          <div className='text-right mx-10 text-[#707070] mt-3'>
+              <Col
+                className='gutter-row w-full'
+                md={24}
+                sm={24}>
+                <Form.Item
+                  name="password"
+                  className='w-full'
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please enter password',
+                    },
+                    {
+                      min: 8,
+                      message: 'Password must be at least 8 characters long',
+                    },
+                  ]}>
+                    <Input.Password
+                      size="large"
+                      prefix={<LockOutlined className="site-form-item-icon" />}
+                      type="password"
+                      placeholder="Password"
+                    />
+                </Form.Item>
+              </Col>
+          </Row>
+
+          <div className='text-right mx-10 text-[#707070]'>
             <Link to="/auth/reset-password">Forgot password?</Link>
           </div>
 
-          <div className="mt-6 grid grid-cols-2 gap-4">
+          <div className="mt-6 grid grid-cols-2 gap-4 mx-5">
             <div></div>
             <Button
               type="submit"
@@ -103,7 +137,8 @@ export default function Login() {
           </div>
 
           <p className='text-center mt-3 mb-5'>Don't have an account? <Link className="text-[#163C94]" to="/auth/registration">Sign up here</Link></p>
-        </form>
+        </Form>
+
       </div>
     </div>
   );
