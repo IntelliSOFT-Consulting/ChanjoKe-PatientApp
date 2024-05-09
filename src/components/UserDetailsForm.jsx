@@ -27,7 +27,7 @@ export default function UserDetailsForm() {
             label={
               <span>FIRST NAME</span>
             }>
-            <Input placeholder='FIRST NAME' className='rounded-md' />
+            <Input placeholder='FIRST NAME' className='rounded-md' disabled />
           </Form.Item>
         </Col>
 
@@ -40,7 +40,7 @@ export default function UserDetailsForm() {
             label={
               <span>LAST NAME</span>
             }>
-            <Input placeholder='LAST NAME' className='rounded-md' />
+            <Input placeholder='LAST NAME' className='rounded-md' disabled />
           </Form.Item>
         </Col>
 
@@ -53,7 +53,7 @@ export default function UserDetailsForm() {
             label={
               <span>ID NUMBER</span>
             }>
-            <Input placeholder='ID NUMBER' className='rounded-md' />
+            <Input placeholder='ID NUMBER' className='rounded-md' disabled />
           </Form.Item>
         </Col>
 
@@ -66,7 +66,7 @@ export default function UserDetailsForm() {
             label={
               <span>PHONE NUMBER</span>
             }>
-            <Input placeholder='PHONE NUMBER' className='rounded-md' type='number' />
+            <Input placeholder='PHONE NUMBER' className='rounded-md' type='number' disabled />
           </Form.Item>
         </Col>
       </Row>
