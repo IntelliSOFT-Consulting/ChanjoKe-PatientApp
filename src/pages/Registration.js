@@ -1,15 +1,15 @@
 import { useState } from 'react';
 import MOHLogo from '../assets/nav-logo.png';
-import TextInput from '../components/TextInput';
-import { Link } from 'react-router-dom';
-import  { useNavigate } from 'react-router-dom';
-import { useApiRequest } from '../api/useApi'
-import { message } from 'antd'
-import { Button } from 'antd'
+import { Link, useNavigate } from 'react-router-dom';
+import { useApiRequest } from '../api/useApi';
+import { Button, message, Input, Form, Row, Col, Alert } from 'antd';
+import { LockOutlined, UserOutlined, MailOutlined, BookOutlined } from '@ant-design/icons';
 
 function Registration() {
   const navigate = useNavigate()
   const { post, get } = useApiRequest()
+  const [form] = Form.useForm()
+
   const [registrationData, setRegistrationData] = useState({
     idNumber: '',
     email: '',
@@ -19,20 +19,11 @@ function Registration() {
   })
   const [loading, setLoading] = useState(false)
 
-  const handleChange = (name, value) => {
-    setRegistrationData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
-
-  const logUserIn = async (e) => {
-
-    e.preventDefault()
+  const logUserIn = async (values) => {
     setLoading(true)
 
     try {
-      const results = await post('/auth/client/register', registrationData)
+      const results = await post('/auth/client/register', values)
 
       if (!results) {
         // Error message is shown
@@ -58,90 +49,137 @@ function Registration() {
 
         <h1 className='text-4xl text-[#163C94] text-center'>Self Registration</h1>
 
-        <form className='mt-5 w-full max-w-64 md:px-40'>
+        <Form
+          layout='vertical'
+          form={form}
+          onFinish={logUserIn}
+          className='mt-10 md:max-w-64 md:px-40'
+          autoComplete='off'>
+          <Row
+            gutter={16}
+            className='mt-5 px-5'>
+            <Col
+              className='gutter-row w-full'
+              md={24}
+              sm={24}>
+              <Form.Item
+                name="secretCode"
+                className='w-full'
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please enter secret code',
+                  },
+                  {
+                    min: 5,
+                    message: 'Code is too short',
+                  },
+                ]}>
+                  <Input
+                    size='large'
+                    placeholder='ID given by provider'
+                    prefix={<BookOutlined className="site-form-item-icon" />}
+                    className='rounded-md' />
+              </Form.Item>
+            </Col>
 
-          {/* <div>
-            <select
-              id="location"
-              name="location"
-              className="mt-2 block w-full rounded-md border-0 py-4 pl-3 pr-10 text-gray-400 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:leading-6"
-              defaultValue="">
-              <option>Identification Number</option>
-              <option>Passport Number</option>
-            </select>
-          </div> */}
+            <Col
+              className='gutter-row w-full'
+              md={24}
+              sm={24}>
+              <Form.Item
+                name="idNumber"
+                className='w-full'
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please enter ID Number',
+                  },
+                ]}>
+                  <Input
+                    size='large'
+                    placeholder='ID Number'
+                    prefix={<UserOutlined className="site-form-item-icon" />}
+                    className='rounded-md' />
+              </Form.Item>
+            </Col>
 
-          <TextInput
-            inputType="text"
-            inputName="secretCode"
-            inputId="secretCode"
-            leadingIcon="true"
-            inputValue={registrationData.secretCode}
-            onInputChange={(value) => handleChange("secretCode", value)}
-            leadingIconName="remember_me"
-            inputPlaceholder="ID given by provider"/>
+            <Col
+              className='gutter-row w-full'
+              md={24}
+              sm={24}>
+              <Form.Item
+                name="email"
+                className='w-full'>
+                  <Input
+                    size='large'
+                    type='email'
+                    placeholder='Email'
+                    prefix={<MailOutlined className="site-form-item-icon" />}
+                    className='rounded-md' />
+              </Form.Item>
+            </Col>
+
+            <Col
+              className='gutter-row w-full'
+              md={24}
+              sm={24}>
+              <Form.Item
+                name="password"
+                className='w-full'
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please enter password',
+                  },
+                  {
+                    min: 8,
+                    message: 'Password must be at least 8 characters long',
+                  },
+                ]}>
+                  <Input.Password
+                    size='large'
+                    type='password'
+                    placeholder='Password'
+                    prefix={<LockOutlined className="site-form-item-icon" />}
+                    className='rounded-md' />
+              </Form.Item>
+            </Col>
+
+            <Col
+              className='gutter-row w-full'
+              md={24}
+              sm={24}>
+              <Form.Item
+                name="confirmPassord"
+                className='w-full'
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please enter password',
+                  },
+                  {
+                    min: 8,
+                    message: 'Password must be at least 8 characters long',
+                  },
+                ]}>
+                  <Input.Password
+                    size='large'
+                    type='password'
+                    placeholder='Confirm Password'
+                    prefix={<LockOutlined className="site-form-item-icon" />}
+                    className='rounded-md' />
+              </Form.Item>
+            </Col>
+          </Row>
+
           
-          <br />
-
-          <TextInput
-            inputType="text"
-            inputName="idNumber"
-            inputId="idNumber"
-            leadingIcon="true"
-            inputValue={registrationData.idNumber}
-            onInputChange={(value) => handleChange("idNumber", value)}
-            leadingIconName="branding_watermark"
-            inputPlaceholder="ID Number"/>
-
-          <br />
-
-          <TextInput
-            inputType="email"
-            inputName="email"
-            inputId="email"
-            leadingIcon="true"
-            inputValue={registrationData.email}
-            onInputChange={(value) => handleChange("email", value)}
-            leadingIconName="mail"
-            inputPlaceholder="Email"/>
-
-          <br />
-
-          <TextInput
-            inputType="password"
-            inputName="password"
-            autocomplete="new_password"
-            inputId="password"
-            leadingIcon="true"
-            trailingIcon="true"
-            trailingIconName="visibility"
-            inputValue={registrationData.password}
-            onInputChange={(value) => handleChange("password", value)}
-            leadingIconName="lock"
-            inputPlaceholder="Password"/>
-
-          <br />
-
-          <TextInput
-            inputType="password"
-            inputName="confirm_password"
-            autocomplete="new_password"
-            inputId="confirm_password"
-            leadingIcon="true"
-            trailingIcon="true"
-            trailingIconName="visibility"
-            inputValue={registrationData.confirmPassword}
-            onInputChange={(value) => handleChange("confirmPassword", value)}
-            leadingIconName="lock"
-            inputPlaceholder="Confirm Password"/>
-
           <div className="mt-6 grid grid-cols-2 gap-4">
             <div></div>
 
             <Button
               type="submit"
               htmlType="submit"
-              onClick={logUserIn}
               loading={loading}
               disabled={loading}
               className="flex w-full items-center justify-center gap-3 rounded-md bg-[#163C94] px-3 py-3 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#24292F]"
@@ -151,7 +189,8 @@ function Registration() {
           </div>
 
           <p className='text-center mt-3 mb-5'>Already have an account? <Link className="text-[#163C94]" to="/auth">Login here</Link></p>
-        </form>
+        </Form>
+
       </div>
     </div>
   );
