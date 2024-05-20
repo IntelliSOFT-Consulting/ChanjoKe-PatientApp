@@ -1,11 +1,9 @@
 import { useEffect, useState } from 'react';
 import Stats from '../components/Stats';
 import Table from '../components/Table';
-import { useNavigate } from 'react-router-dom';
-
-const appointments = [
-  { date: 'Tue, March 30, 2023', vaccine: 'Oxford/AstraZeneca', dose: 1, status: 'NA' },
-]
+import { useNavigate } from 'react-router-dom'
+import { useApiRequest } from '../api/useApi';
+import moment from 'moment';
 
 const tableHeaders = [
   { title: 'Date', classes: 'py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6' },
@@ -19,7 +17,26 @@ function Home() {
   const [ certificateCount, setCertificateCount ] = useState(0)
   const [ vaccineCount, setVaccineCount ] = useState(0)
 
+  const [appointments, setAppointments] = useState([])
+
   const navigate = useNavigate()
+  const { get } = useApiRequest()
+
+  const fetchAppointments = async (user) => {
+    const response = await get(`/hapi/fhir/Appointment?supporting-info=Patient/${user.fhirPatientId}`)
+    if (response?.entry && Array.isArray(response?.entry) && response?.entry.length > 0) {
+      const appointmentData = response?.entry?.map((item) => {
+        return {
+          date: moment(item?.resource?.start).format('DD-MM-YYYY'),
+          vaccine: item?.resource?.description,
+          dose: '',
+          status: item?.resource?.status,
+        }
+      })
+      setAppointments(appointmentData)
+      setAppointmentCount(response?.total)
+    }
+  }
 
   useEffect(() => {
     const userStorage = localStorage.getItem('user')
@@ -29,19 +46,9 @@ function Home() {
       navigate("/auth")
     }
 
-    fetch('https://chanjoke.intellisoftkenya.com/hapi/fhir/Appointment')
-      .then((res) => {
-        const data = res.json()
-        return data
-      })
-      .then((data) => {
-        console.log({ data })
+    const user = JSON.parse(userStorage)
 
-        setAppointmentCount(data.total)
-      })
-      .catch((error) => {
-        console.log({ error })
-      })
+    fetchAppointments(user)
 
     fetch('https://chanjoke.intellisoftkenya.com/hapi/fhir/Immunization')
       .then((res) => {
@@ -68,7 +75,7 @@ function Home() {
       .catch((error) => {
         console.log({ error })
       })
-  })
+  }, [])
   return (
     <div>
       <div className='hidden md:block'>
@@ -104,10 +111,31 @@ function Home() {
       </div>
 
       <div className='hidden md:block'>
-        <Table
+        {appointments.length > 0 && <Table
           tableTitle="Upcoming appointments"
           theaders={tableHeaders}
-          data={appointments} />
+          data={appointments} />}
+      </div>
+
+      <div className="sm:hidden mt-5">
+        {appointments.map((result) => (
+          <div key={result.id} className='w-full grid grid-cols-5 gap-3 border border-1 border-gray-200'>
+            <div className="py-5 pr-6 col-span-4">
+              <div className="text-sm pl-5 leading-6 text-gray-900">{result.vaccine}</div>
+              <div className="mt-1 pl-5 text-xs leading-5 text-gray-800">{result.date} - Dose: {result.dose}</div>
+            </div>
+            <div className="py-5 max-w-auto right-5">
+              <div className="flex">
+                <a
+                  href='#'
+                  className="text-sm font-medium leading-6 text-indigo-600 hover:text-indigo-500"
+                >
+                  View
+                </a>
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
 
     </div>
