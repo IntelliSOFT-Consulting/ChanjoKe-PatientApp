@@ -1,23 +1,17 @@
-import { useState } from 'react';
-import MOHLogo from '../assets/nav-logo.png';
-import { Link, useNavigate } from 'react-router-dom';
-import { useApiRequest } from '../api/useApi';
-import { Button, message, Input, Form, Row, Col, Alert } from 'antd';
-import { LockOutlined, UserOutlined, MailOutlined, BookOutlined } from '@ant-design/icons';
+import { useState } from 'react'
+import MOHLogo from '../assets/nav-logo.png'
+import { Link, useNavigate } from 'react-router-dom'
+import { useApiRequest } from '../api/useApi'
+import { Button, message, Input, Form, Row, Col } from 'antd'
+import { LockOutlined, UserOutlined, MailOutlined, BookOutlined, WarningTwoTone } from '@ant-design/icons'
 
 function Registration() {
   const navigate = useNavigate()
-  const { post, get } = useApiRequest()
+  const { post } = useApiRequest()
   const [form] = Form.useForm()
 
-  const [registrationData, setRegistrationData] = useState({
-    idNumber: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    secretCode: '',
-  })
   const [loading, setLoading] = useState(false)
+  const [registrationError, setRegistrationError] = useState(false)
 
   const logUserIn = async (values) => {
     setLoading(true)
@@ -25,9 +19,13 @@ function Registration() {
     try {
       const results = await post('/auth/client/register', values)
 
+      console.log({ results })
+
       if (!results) {
+        setRegistrationError(true)
         // Error message is shown
       } else {
+        setRegistrationError(false)
         message.success('Registration successful, log in with the credentials used')
 
         navigate("/auth")
@@ -58,6 +56,18 @@ function Registration() {
           <Row
             gutter={16}
             className='mt-5 px-5'>
+
+            {registrationError && <div className="flex flex-col items-center bg-red-100 py-2 px-4 rounded-md ml-0 md:ml-2 h-full my-0 max-w-full mb-5">
+              <WarningTwoTone
+                twoToneColor="red"
+                classID="text-black text-6xl"
+              />
+              <div className="ml-2 text-sm">
+                Incorrect credentials when registering, please consult your practitioner for more information
+              </div>
+            </div>
+            }
+
             <Col
               className='gutter-row w-full'
               md={24}
