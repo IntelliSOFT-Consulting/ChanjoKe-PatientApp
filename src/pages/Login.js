@@ -1,12 +1,13 @@
 import MOHLogo from '../assets/nav-logo.png'
-import { LockOutlined, UserOutlined, MailOutlined } from '@ant-design/icons'
+import { LockOutlined, UserOutlined, WarningTwoTone  } from '@ant-design/icons'
 import { Link, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
-import { Button, Input, Form, Row, Col, Alert } from 'antd'
+import { Button, Input, Form, Row, Col } from 'antd'
 import { useApiRequest } from '../api/useApi'
 
 export default function Login() {
   const [loading, setLoading] = useState(false)
+  const [loginError, setLoginError] = useState(false)
 
   const navigation = useNavigate()
   const { post, get } = useApiRequest()
@@ -14,13 +15,16 @@ export default function Login() {
 
   const handleSubmit = async (values) => {
     setLoading(true)
+    setLoginError(false)
 
     try {
       const results = await post('/auth/client/login', values)
 
       if (!results) {
         // Error message is shown
+        setLoginError(true)
       } else {
+        setLoginError(false)
         localStorage.setItem('auth', JSON.stringify(results))
 
         const userData = await get('/auth/client/me')
@@ -47,14 +51,6 @@ export default function Login() {
 
         <h1 className='text-4xl text-[#163C94] text-center'>Login to your account</h1>
 
-        {/* <Alert
-                message="Unauthorized: Incorrect credentials"
-                type="warning"
-                className='mt-4 mx-48'
-                closable
-                // onClose={onClose}
-              /> */}
-
         <Form
           layout='vertical'
           form={form}
@@ -64,6 +60,17 @@ export default function Login() {
           <Row
             gutter={16}
             className='mt-5 px-5'>
+
+              {loginError && <div className="flex flex-col items-center bg-red-100 py-2 px-4 rounded-md ml-0 md:ml-2 h-full my-0 max-w-full mb-5">
+                <WarningTwoTone
+                  twoToneColor="red"
+                  classID="text-black text-6xl"
+                />
+                <div className="ml-2 text-sm">
+                  Incorrect ID/Passport number or password, please try again
+                </div>
+              </div>
+              }
               
               <Col
                 className='gutter-row w-full'
