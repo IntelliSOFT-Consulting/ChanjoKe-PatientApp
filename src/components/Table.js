@@ -23,12 +23,12 @@ export default function Table(props) {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200 bg-white">
-                {props.data.map((item, index) => (
+                {props.data?.map((item, index) => (
                   <tr className="divide-x divide-gray-200" key={index}>
                     {Object.keys(item).map((itemkey) => (
                       <td
                         className={`whitespace-nowrap py-4 pl-4 pr-3 text-sm ${
-                          props.theaders.find((header) => header.title === itemkey)?.classes || ''
+                          props.theaders.find((header) => header?.title === itemkey)?.classes || ''
                         }`}
                         key={itemkey}
                       >
