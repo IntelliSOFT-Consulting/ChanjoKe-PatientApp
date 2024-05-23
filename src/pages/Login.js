@@ -67,7 +67,7 @@ export default function Login() {
                   classID="text-black text-6xl"
                 />
                 <div className="ml-2 text-sm">
-                  Incorrect ID/Passport number or password, please try again
+                  You have entered the wrong user ID or password. Please try again.
                 </div>
               </div>
               }
