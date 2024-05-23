@@ -4,6 +4,8 @@ import Table from '../components/Table';
 import { useNavigate } from 'react-router-dom'
 import { useApiRequest } from '../api/useApi';
 import moment from 'moment';
+import { LoadingOutlined } from '@ant-design/icons';
+import { Spin } from 'antd';
 
 const tableHeaders = [
   { title: 'Date', classes: 'py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6' },
@@ -16,6 +18,7 @@ function Home() {
   const [ appointmentCount, setAppointmentCount ] = useState(0)
   const [ certificateCount, setCertificateCount ] = useState(0)
   const [ vaccineCount, setVaccineCount ] = useState(0)
+  const [loading, setLoading] = useState(false)
 
   const [appointments, setAppointments] = useState([])
 
@@ -23,7 +26,10 @@ function Home() {
   const { get } = useApiRequest()
 
   const fetchAppointments = async (user) => {
+    setLoading(true)
     const response = await get(`/hapi/fhir/Appointment?supporting-info=Patient/${user.fhirPatientId}`)
+
+    setLoading(false)
     if (response?.entry && Array.isArray(response?.entry) && response?.entry.length > 0) {
       const appointmentData = response?.entry?.map((item) => {
         return {
@@ -33,8 +39,11 @@ function Home() {
           status: item?.resource?.status,
         }
       })
+      console.log({ appointmentData, total: response?.total })
       setAppointments(appointmentData)
       setAppointmentCount(response?.total)
+    } else {
+      setAppointmentCount(0)
     }
   }
 
@@ -50,20 +59,20 @@ function Home() {
 
     fetchAppointments(user)
 
-    fetch('https://chanjoke.intellisoftkenya.com/hapi/fhir/Immunization')
+    fetch(`https://chanjoke.intellisoftkenya.com/hapi/fhir/ImmunizationRecommendation?patient=Patient/${user.fhirPatientId}`)
       .then((res) => {
         const data = res.json()
         return data
       })
       .then((data) => {
         console.log({ Immunization: data })
-        setCertificateCount(data.total)
+        setCertificateCount(0)
       })
       .catch((error) => {
         console.log({ error })
       })
 
-    fetch('https://chanjoke.intellisoftkenya.com/hapi/fhir/ImmunizationRecommendation')
+    fetch(`https://chanjoke.intellisoftkenya.com/hapi/fhir/Immunization?patient=Patient/${user.fhirPatientId}`)
       .then((res) => {
         const data = res.json()
         return data
@@ -111,11 +120,24 @@ function Home() {
       </div>
 
       <div className='hidden md:block'>
-        {appointments.length > 0 && <Table
+        {appointments.length > 0 && !loading && <Table
           tableTitle="Upcoming appointments"
           theaders={tableHeaders}
           data={appointments} />}
       </div>
+
+      {loading === true && <div className="my-10 mx-auto flex justify-center h-5 w-5">
+        <Spin
+          indicator={
+            <LoadingOutlined
+              style={{
+                fontSize: 72,
+              }}
+              spin
+            />
+          }
+        />
+      </div>}
 
       <div className="sm:hidden mt-5">
         {appointments.map((result) => (
