@@ -1,6 +1,8 @@
 export default function Table(props) {
 
   const handleDownload = () => {}
+
+  console.log({ props })
   return (
     <div className="border-b border-gray-200 rounded-lg shadow bg-white px-4 py-5 sm:px-6">
       {props.tableTitle && <div className="sm:flex sm:items-center">

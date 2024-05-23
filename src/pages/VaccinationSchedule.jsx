@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import Table from '../components/Table';
-import moment from 'moment';
-import { useApiRequest } from '../api/useApi';
+import moment from 'moment';import { useApiRequest } from '../api/useApi';
 import { Disclosure } from '@headlessui/react';
 import { Badge } from 'antd';
 import { MinusSmallIcon, PlusSmallIcon } from '@heroicons/react/24/outline';
-import LoadingArrows from '../components/spinners/LoadingArrows';
+import { LoadingOutlined } from '@ant-design/icons';
+import { Spin } from 'antd';
 
 const tableHeaders = [
   { title: 'Dose', classes: 'py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6' },
@@ -66,7 +66,14 @@ export default function VaccinationSchedule() {
       if (!administeredVaccines?.includes(recommendation?.vaccineCode?.[0]?.text)) {
         return recommendation;
       }
+      // if (administeredVaccines?.includes(recommendation?.vaccineCode?.[0]?.text)) {
+      //   const item = userVaccines?.entry?.find((vaccine) => vaccine?.resource?.vaccineCode?.text === recommendation?.vaccineCode?.[0]?.text);
+
+      //   return item?.resource
+      // }
     }).filter(Boolean);
+
+    console.log({ rec })
 
     if (Array.isArray(recommendations)) {
       const vaccineSchedules = recommendations.map((schedule) => ({
@@ -102,9 +109,9 @@ export default function VaccinationSchedule() {
               Object.keys(categorizedSchedules).length > 0 && (
                 <dl
                   key={category}
-                  className="mt-10 space-y-6 divide-y divide-gray-900/10"
+                  className="mt-5 space-y-6 divide-y divide-gray-900/10"
                 >
-                  <div className="overflow-hidden rounded-lg bg-gray-100 px-4 pb-6 pt-5 mt-5 shadow sm:px-6 sm:pt-6">
+                  <div className="overflow-hidden rounded-lg bg-gray-100 px-4 py-4 mt-5 shadow">
                     <Disclosure
                       as="div"
                       key={category}
@@ -184,8 +191,17 @@ export default function VaccinationSchedule() {
               )
           )
         ) : (
-          <div className="my-10 mx-auto flex justify-center h-20 w-20 animate-spin">
-            <LoadingArrows />
+          <div className="my-10 mx-auto flex justify-center h-5 w-5">
+            <Spin
+              indicator={
+                <LoadingOutlined
+                  style={{
+                    fontSize: 50,
+                  }}
+                  spin
+                />
+              }
+            />
           </div>
         )}
 
