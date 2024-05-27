@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react';
-import Table from '../components/Table';
-import moment from 'moment';import { useApiRequest } from '../api/useApi';
+// import Table from '../components/Table';
+import Table from '../components/DataTable';
+import moment from 'moment';
+import dayjs from 'dayjs';
+import { useApiRequest } from '../api/useApi';
 import { Disclosure } from '@headlessui/react';
-import { Badge } from 'antd';
+import { Badge, Spin, Tooltip, Tag, Button, Checkbox, Popconfirm } from 'antd';
 import { MinusSmallIcon, PlusSmallIcon } from '@heroicons/react/24/outline';
 import { LoadingOutlined } from '@ant-design/icons';
-import { Spin } from 'antd';
+
 
 const tableHeaders = [
   { title: 'Dose', classes: 'py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6' },
@@ -15,6 +18,153 @@ const tableHeaders = [
 ]
 
 export default function VaccinationSchedule() {
+  const statusMessage = (record, locked = false) => {
+    // const missed = datePassed(
+    //   record.status,
+    //   record?.dueDate?.format('YYYY-MM-DD')
+    // )
+    const missed = false
+    switch (record?.status) {
+      case 'completed':
+        return 'Vaccine already administered'
+      case 'not-done':
+        return `Vaccine not administered because of ${
+          record.statusReason?.coding?.[0]?.display
+        } until ${record.dueDate.format('DD-MM-YYYY')}`
+      case 'entered-in-error':
+        return `Vaccine contraindicated, to be administered on ${record.dueDate.format(
+          'DD-MM-YYYY'
+        )}`
+      case 'Due':
+        return locked && record.dueDate?.isAfter(dayjs())
+          ? 'Vaccination date not yet due'
+          : missed && locked
+          ? 'Vaccine missed'
+          : ''
+      default:
+        return ''
+    }
+  }
+
+  const columns = [
+    {
+      title: '',
+      dataIndex: 'vaccine',
+      key: 'vaccine',
+      render: (_text, record) => {
+        const completed = record.status === 'completed'
+        const locked = false // lockVaccine(record.dueDate, record.lastDate)
+
+        return (
+          <Tooltip title={statusMessage(record, locked)} color="#163c94">
+            <Checkbox
+              name={record.vaccine}
+              value={record.vaccine}
+              defaultChecked={completed}
+              disabled={
+                completed ||
+                (locked &&
+                  !['Contraindicated', 'Not Administered'].includes(
+                    record.status
+                  ))
+              }
+              // onChange={() => handleCheckBox(record)}
+            />
+          </Tooltip>
+        )
+      },
+      width: '5%',
+    },
+    {
+      title: 'Vaccine',
+      dataIndex: 'vaccine',
+      key: 'vaccine',
+    },
+    {
+      title: 'Dose Number',
+      dataIndex: 'doseNumber',
+      key: 'doseNumber',
+    },
+    {
+      title: 'Due Date',
+      dataIndex: 'dueDate',
+      key: 'dueDate',
+      render: (text, _record) => (text ? text.format('DD-MM-YYYY') : '-'),
+    },
+    {
+      title: 'Date Administered',
+      dataIndex: 'administeredDate',
+      key: 'administeredDate',
+      render: (text, record) =>
+        text && record.status === 'completed' ? text.format('DD-MM-YYYY') : '-',
+    },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
+      render: (text, record) => {
+        const missed = false // datePassed(text, record?.dueDate?.format('YYYY-MM-DD'))
+        return (
+          <Tag
+            color={
+              text === 'completed'
+                ? 'green'
+                : text === 'Not Administered'
+                ? 'red'
+                : missed &&
+                  text !== 'Contraindicated' &&
+                  text !== 'Not Administered'
+                ? 'red'
+                : text === 'Contraindicated'
+                ? 'yellow'
+                : 'gray'
+            }
+          >
+            {text === 'completed'
+              ? 'Administered'
+              : text === 'Not Administered'
+              ? 'Not Administered'
+              : text === 'Contraindicated'
+              ? 'Contraindicated'
+              : missed && text !== 'entered-in-error'
+              ? 'Missed'
+              : 'Upcoming'}
+          </Tag>
+        )
+      },
+    },
+    {
+      title: 'Actions',
+      dataIndex: 'actions',
+      key: 'actions',
+      render: (text, record) => (
+        <div className="flex space-x-2">
+          <Button
+            disabled={record.status === 'Due'}
+            onClick={() => {
+              // navigate(`/view-vaccination/${record?.id}`)
+            }}
+            type="link"
+            className="font-bold text=[#173C94]"
+          >
+            View
+          </Button>
+          {record.status === 'completed' && (
+            <Popconfirm
+              title="Are you sure you want to delete this record?"
+              // onConfirm={() => deleteImmunization(record.id)}
+              okText="Yes"
+              cancelText="No"
+            >
+              <Button type="link" danger>
+                Delete
+              </Button>
+            </Popconfirm>
+          )}
+        </div>
+      ),
+    },
+  ]
 
   const { get } = useApiRequest()
 
@@ -24,6 +174,7 @@ export default function VaccinationSchedule() {
 
   function categorizeDataBySeries(data) {
     let categorizedData = {};
+    console.log({ data })
 
     data.forEach(obj => {
         let series = obj.series;
@@ -156,9 +307,16 @@ export default function VaccinationSchedule() {
                               className="mt-2 md:pr-5 overflow-x-auto">
 
                               <div className='hidden md:block'>
-                                <Table
+                                {/* <Table
                                   theaders={tableHeaders}
-                                  data={categorizedSchedules[category]} />
+                                  data={categorizedSchedules[category]} /> */}
+
+                                <Table
+                                  columns={columns}
+                                  dataSource={categorizedSchedules[category]}
+                                  pagination={false}
+                                  size="small"
+                                />
                               </div>
 
                               <div className="sm:hidden mt-5">

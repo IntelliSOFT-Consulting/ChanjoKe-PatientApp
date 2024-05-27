@@ -27,7 +27,7 @@ function Home() {
 
   const fetchAppointments = async (user) => {
     setLoading(true)
-    const response = await get(`/hapi/fhir/Appointment?supporting-info=Patient/${user.fhirPatientId}`)
+    const response = await get(`/hapi/fhir/Appointment?supporting-info=Patient/${user?.fhirPatientId}`)
 
     setLoading(false)
     if (response?.entry && Array.isArray(response?.entry) && response?.entry.length > 0) {
@@ -59,7 +59,7 @@ function Home() {
 
     fetchAppointments(user)
 
-    fetch(`https://chanjoke.intellisoftkenya.com/hapi/fhir/ImmunizationRecommendation?patient=Patient/${user.fhirPatientId}`)
+    fetch(`https://chanjoke.intellisoftkenya.com/hapi/fhir/ImmunizationRecommendation?patient=Patient/${user?.fhirPatientId}`)
       .then((res) => {
         const data = res.json()
         return data
@@ -72,7 +72,7 @@ function Home() {
         console.log({ error })
       })
 
-    fetch(`https://chanjoke.intellisoftkenya.com/hapi/fhir/Immunization?patient=Patient/${user.fhirPatientId}`)
+    fetch(`https://chanjoke.intellisoftkenya.com/hapi/fhir/Immunization?patient=Patient/${user?.fhirPatientId}`)
       .then((res) => {
         const data = res.json()
         return data
