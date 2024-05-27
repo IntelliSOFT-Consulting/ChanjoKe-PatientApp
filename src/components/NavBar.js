@@ -1,16 +1,15 @@
 import MOHLogo from '../assets/nav-logo.png';
 import { Link } from 'react-router-dom'
 import ProfileDropdown from './ProfileDropdown'
-import { useNavigate } from 'react-router-dom'
+import { useEffect } from 'react';
 
 function NavBar() {
 
-  const navigate = useNavigate()
+  const user = JSON.parse(localStorage.getItem('user'))
 
-  const logUserOut = () => {
-    localStorage.clear();
-    navigate("/login")
-  }
+  useEffect(() => {
+    console.log({ user })
+  }, [])
 
   return (
     <div className="hidden sm:block md:block">

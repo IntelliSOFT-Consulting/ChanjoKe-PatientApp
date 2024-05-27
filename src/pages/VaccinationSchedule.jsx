@@ -133,37 +133,37 @@ export default function VaccinationSchedule() {
         )
       },
     },
-    {
-      title: 'Actions',
-      dataIndex: 'actions',
-      key: 'actions',
-      render: (text, record) => (
-        <div className="flex space-x-2">
-          <Button
-            disabled={record.status === 'Due'}
-            onClick={() => {
-              // navigate(`/view-vaccination/${record?.id}`)
-            }}
-            type="link"
-            className="font-bold text=[#173C94]"
-          >
-            View
-          </Button>
-          {record.status === 'completed' && (
-            <Popconfirm
-              title="Are you sure you want to delete this record?"
-              // onConfirm={() => deleteImmunization(record.id)}
-              okText="Yes"
-              cancelText="No"
-            >
-              <Button type="link" danger>
-                Delete
-              </Button>
-            </Popconfirm>
-          )}
-        </div>
-      ),
-    },
+    // {
+    //   title: 'Actions',
+    //   dataIndex: 'actions',
+    //   key: 'actions',
+    //   render: (text, record) => (
+    //     <div className="flex space-x-2">
+    //       <Button
+    //         disabled={record.status === 'Due'}
+    //         onClick={() => {
+    //           // navigate(`/view-vaccination/${record?.id}`)
+    //         }}
+    //         type="link"
+    //         className="font-bold text=[#173C94]"
+    //       >
+    //         View
+    //       </Button>
+    //       {record.status === 'completed' && (
+    //         <Popconfirm
+    //           title="Are you sure you want to delete this record?"
+    //           // onConfirm={() => deleteImmunization(record.id)}
+    //           okText="Yes"
+    //           cancelText="No"
+    //         >
+    //           <Button type="link" danger>
+    //             Delete
+    //           </Button>
+    //         </Popconfirm>
+    //       )}
+    //     </div>
+    //   ),
+    // },
   ]
 
   const { get } = useApiRequest()

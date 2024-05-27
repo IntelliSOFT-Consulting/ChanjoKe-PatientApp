@@ -2,14 +2,14 @@ import Table from '../components/Table';
 import { useState, useEffect } from 'react';
 
 const tableHeaders = [
-  { title: '#', classes: 'py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6' },
+  { title: 'Dose Number', classes: 'py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6' },
   { title: 'Vaccine', classes: 'px-3 py-3.5 text-left text-sm font-semibold text-gray-900' },
   { title: 'Action', classes: 'px-3 py-3.5 text-left text-sm font-semibold text-gray-900' }
 ]
 
 export default function VaccinationCertificate() {
   const [vaccineCertificates, setVaccineCertificates] = useState([
-    { date: '30-12-2023', vaccine: 'Oxford/AstraZeneca', action: 'Download' },
+    { date: '1', vaccine: 'Oxford/AstraZeneca', action: 'Download' },
   ])
 
   return (

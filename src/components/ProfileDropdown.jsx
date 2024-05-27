@@ -13,7 +13,6 @@ export default function ProfileDropdown() {
   const user = JSON.parse(userStorage)
   
   const showModal = () => {
-    console.log('does this...')
     setIsModalOpen(true);
   };
   const handleOk = () => {
@@ -24,7 +23,6 @@ export default function ProfileDropdown() {
   };
 
   function logUserOut() {
-    console.log('cllicked')
     localStorage.clear()
     navigate("/auth")
   }

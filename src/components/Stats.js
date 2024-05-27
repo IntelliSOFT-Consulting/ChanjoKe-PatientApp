@@ -3,7 +3,7 @@ import { VaccineIcon } from "../assets/icons/VaccineIcon"
 import { CertificateIcon } from "../assets/icons/CertificateIcon"
 
 const stats = [
-  { name: 'Vaccines', icon: VaccineIcon, key: 'vaccines' },
+  { name: 'Vaccines Administered', icon: VaccineIcon, key: 'vaccines' },
   { name: 'Appointments', icon: AppointmentsIcon, key: 'appointments' },
   { name: 'Certificates', icon: CertificateIcon, key: 'certificates' },
 ]
