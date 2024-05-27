@@ -74,6 +74,7 @@ function Registration() {
               sm={24}>
               <Form.Item
                 name="secretCode"
+                hasFeedback
                 className='w-full'
                 rules={[
                   {
@@ -100,6 +101,7 @@ function Registration() {
               <Form.Item
                 name="idNumber"
                 className='w-full'
+                hasFeedback
                 rules={[
                   {
                     required: true,
@@ -120,7 +122,12 @@ function Registration() {
               sm={24}>
               <Form.Item
                 name="email"
-                className='w-full'>
+                className='w-full'
+                hasFeedback
+                rules={[
+                  { type: 'email', message: 'Please enter a valid email address!' },
+                  { required: true, message: 'Please input your email!' },
+                ]}>
                   <Input
                     size='large'
                     type='email'
@@ -137,6 +144,7 @@ function Registration() {
               <Form.Item
                 name="password"
                 className='w-full'
+                hasFeedback
                 rules={[
                   {
                     required: true,
@@ -163,15 +171,18 @@ function Registration() {
               <Form.Item
                 name="confirmPassord"
                 className='w-full'
+                dependencies={['password']}
+                hasFeedback
                 rules={[
-                  {
-                    required: true,
-                    message: 'Please enter password',
-                  },
-                  {
-                    min: 8,
-                    message: 'Password must be at least 8 characters long',
-                  },
+                  { required: true, message: 'Please confirm your password!' },
+                  ({ getFieldValue }) => ({
+                    validator(_, value) {
+                      if (!value || getFieldValue('password') === value) {
+                        return Promise.resolve();
+                      }
+                      return Promise.reject(new Error('The two passwords that you entered do not match!'));
+                    },
+                  }),
                 ]}>
                   <Input.Password
                     size='large'

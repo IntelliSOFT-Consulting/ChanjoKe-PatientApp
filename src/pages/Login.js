@@ -79,6 +79,7 @@ export default function Login() {
                 <Form.Item
                   name="idNumber"
                   className='w-full'
+                  hasFeedback
                   rules={[
                     {
                       required: true,
@@ -106,6 +107,7 @@ export default function Login() {
                 <Form.Item
                   name="password"
                   className='w-full'
+                  hasFeedback
                   rules={[
                     {
                       required: true,
