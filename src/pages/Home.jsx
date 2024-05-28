@@ -6,12 +6,17 @@ import { useApiRequest } from '../api/useApi';
 import moment from 'moment';
 import { LoadingOutlined } from '@ant-design/icons';
 import { Spin, Empty } from 'antd';
+import { datePassed, lockVaccine } from '../utils/validate';
 
 const tableHeaders = [
   { title: 'Date', classes: 'py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6' },
   { title: 'Vaccine', classes: 'px-3 py-3.5 text-left text-sm font-semibold text-gray-900' },
   { title: 'Dose Number', classes: 'px-3 py-3.5 text-left text-sm font-semibold text-gray-900' },
   { title: 'Status', classes: 'px-3 py-3.5 text-left text-sm font-semibold text-gray-900' }
+]
+
+const upcomingVaccines = [
+  { date: '12-03-2024', vaccine: 'BCG', doseNumber: '1', status: 'Upcoming' }
 ]
 
 function Home() {
@@ -39,7 +44,7 @@ function Home() {
           status: item?.resource?.status,
         }
       })
-      // console.log({ appointmentData, total: response?.total })
+
       setAppointments(appointmentData)
       setAppointmentCount(response?.total)
     } else {
@@ -47,6 +52,28 @@ function Home() {
     }
   }
 
+  // function getPassedItemsWithSameName({ passed, name, objectValues }) {
+  //   if (!passed) return []; // Return empty array if the item didn't pass
+  
+  //   let firstPassedItem = null;
+  //   const passedItems = [];
+  
+  //   return function(data) {
+  //     if (!firstPassedItem) {
+  //       // If it's the first passed item, store it and add to passedItems
+  //       firstPassedItem = { passed, name, objectValues };
+  //       passedItems.push(firstPassedItem);
+  //     } else if (name === firstPassedItem.name) {
+  //       // If subsequent item has the same name, add to passedItems
+  //       passedItems.push({ passed, name, objectValues });
+  //     }
+  //     // Return the collected passed items with the same name
+  //     return passedItems;
+  //   };
+  // }
+  
+  // const getPassedItems = getPassedItemsWithSameName();
+  
   useEffect(() => {
     const userStorage = localStorage.getItem('user')
     
@@ -65,6 +92,21 @@ function Home() {
         return data
       })
       .then((data) => {
+        // const recommendations = data?.entry?.[0]?.resource?.recommendation
+
+        // recommendations.map((recommendedVaccine) => {
+        //   const dueDate = recommendedVaccine?.dateCriterion?.find(item => 
+        //     item.code.coding.some(code => code.code === "Earliest-date-to-administer")
+        //   );
+        //   const lastDate = recommendedVaccine?.dateCriterion?.find(item => 
+        //     item.code.coding.some(code => code.code === "Latest-date-to-administer")
+        //   );
+        //   const passedDate = lockVaccine(moment(dueDate?.value), moment(lastDate?.value))
+
+        //   const items = getPassedItems({...passedDate, ...recommendedVaccine?.vaccineCode?.[0]?.text, ...recommendedVaccine })
+
+        //   return recommendedVaccine
+        // })
         // console.log({ Immunization: data })
         setCertificateCount(0)
       })
@@ -127,6 +169,13 @@ function Home() {
           tableTitle="Upcoming Appointments"
           theaders={tableHeaders}
           data={appointments} />}
+      </div>
+
+      <div className='hidden md:block mt-5'>
+        {appointments.length > 0 && !loading && <Table
+          tableTitle="Upcoming Vaccinations"
+          theaders={tableHeaders}
+          data={upcomingVaccines} />}
       </div>
 
       {loading === true && <div className="my-10 mx-auto flex justify-center h-5 w-5">
