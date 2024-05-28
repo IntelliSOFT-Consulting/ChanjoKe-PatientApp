@@ -1,80 +1,18 @@
 import { useEffect, useState } from 'react';
-// import Table from '../components/Table';
 import Table from '../components/DataTable';
 import moment from 'moment';
 import dayjs from 'dayjs';
 import { useApiRequest } from '../api/useApi';
 import { Disclosure } from '@headlessui/react';
-import { Badge, Spin, Tooltip, Tag, Button, Checkbox, Popconfirm } from 'antd';
+import { Badge, Spin, Tag } from 'antd';
 import { MinusSmallIcon, PlusSmallIcon } from '@heroicons/react/24/outline';
 import { LoadingOutlined } from '@ant-design/icons';
-
-
-const tableHeaders = [
-  { title: 'Dose', classes: 'py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6' },
-  { title: 'Vaccine', classes: 'px-3 py-3.5 text-left text-sm font-semibold text-gray-900' },
-  { title: 'Status', classes: 'px-3 py-3.5 text-left text-sm font-semibold text-gray-900' },
-  { title: 'Schedule', classes: 'px-3 py-3.5 text-left text-sm font-semibold text-gray-900' }
-]
+import { datePassed, lockVaccine } from '../utils/validate';
+import { colorCodeVaccines } from '../utils/vaccineController'
 
 export default function VaccinationSchedule() {
-  const statusMessage = (record, locked = false) => {
-    // const missed = datePassed(
-    //   record.status,
-    //   record?.dueDate?.format('YYYY-MM-DD')
-    // )
-    const missed = false
-    switch (record?.status) {
-      case 'completed':
-        return 'Vaccine already administered'
-      case 'not-done':
-        return `Vaccine not administered because of ${
-          record.statusReason?.coding?.[0]?.display
-        } until ${record.dueDate.format('DD-MM-YYYY')}`
-      case 'entered-in-error':
-        return `Vaccine contraindicated, to be administered on ${record.dueDate.format(
-          'DD-MM-YYYY'
-        )}`
-      case 'Due':
-        return locked && record.dueDate?.isAfter(dayjs())
-          ? 'Vaccination date not yet due'
-          : missed && locked
-          ? 'Vaccine missed'
-          : ''
-      default:
-        return ''
-    }
-  }
 
   const columns = [
-    {
-      title: '',
-      dataIndex: 'vaccine',
-      key: 'vaccine',
-      render: (_text, record) => {
-        const completed = record.status === 'completed'
-        const locked = false // lockVaccine(record.dueDate, record.lastDate)
-
-        return (
-          <Tooltip title={statusMessage(record, locked)} color="#163c94">
-            <Checkbox
-              name={record.vaccine}
-              value={record.vaccine}
-              defaultChecked={completed}
-              disabled={
-                completed ||
-                (locked &&
-                  !['Contraindicated', 'Not Administered'].includes(
-                    record.status
-                  ))
-              }
-              // onChange={() => handleCheckBox(record)}
-            />
-          </Tooltip>
-        )
-      },
-      width: '5%',
-    },
     {
       title: 'Vaccine',
       dataIndex: 'vaccine',
@@ -89,21 +27,19 @@ export default function VaccinationSchedule() {
       title: 'Due Date',
       dataIndex: 'dueDate',
       key: 'dueDate',
-      render: (text, _record) => (text ? text.format('DD-MM-YYYY') : '-'),
     },
     {
       title: 'Date Administered',
       dataIndex: 'administeredDate',
       key: 'administeredDate',
-      render: (text, record) =>
-        text && record.status === 'completed' ? text.format('DD-MM-YYYY') : '-',
+      render: (text, record) => text && record.status === 'completed' ? dayjs(text).format('DD-MM-YYYY') : '-',
     },
     {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
       render: (text, record) => {
-        const missed = false // datePassed(text, record?.dueDate?.format('YYYY-MM-DD'))
+        const missed = datePassed(text, moment(record?.dueDate, 'DD-MM-YYYY').format('YYYY-MM-DD'))
         return (
           <Tag
             color={
@@ -133,37 +69,6 @@ export default function VaccinationSchedule() {
         )
       },
     },
-    // {
-    //   title: 'Actions',
-    //   dataIndex: 'actions',
-    //   key: 'actions',
-    //   render: (text, record) => (
-    //     <div className="flex space-x-2">
-    //       <Button
-    //         disabled={record.status === 'Due'}
-    //         onClick={() => {
-    //           // navigate(`/view-vaccination/${record?.id}`)
-    //         }}
-    //         type="link"
-    //         className="font-bold text=[#173C94]"
-    //       >
-    //         View
-    //       </Button>
-    //       {record.status === 'completed' && (
-    //         <Popconfirm
-    //           title="Are you sure you want to delete this record?"
-    //           // onConfirm={() => deleteImmunization(record.id)}
-    //           okText="Yes"
-    //           cancelText="No"
-    //         >
-    //           <Button type="link" danger>
-    //             Delete
-    //           </Button>
-    //         </Popconfirm>
-    //       )}
-    //     </div>
-    //   ),
-    // },
   ]
 
   const { get } = useApiRequest()
@@ -174,23 +79,24 @@ export default function VaccinationSchedule() {
 
   function categorizeDataBySeries(data) {
     let categorizedData = {};
-    console.log({ data })
 
     data.forEach(obj => {
         let series = obj.series;
         if (categorizedData.hasOwnProperty(series)) {
             categorizedData[series].push({
-              dose: obj?.doseNumberPositiveInt,
-              title: obj?.vaccineCode?.[0]?.text,
+              doseNumber: obj?.doseNumberPositiveInt,
+              vaccine: obj?.vaccineCode?.[0]?.text,
               status: obj?.forecastStatus?.coding?.[0]?.display,
-              schedule: moment(obj?.dateCriterion?.[0]?.value).format('DD-MM-YYYY'),
+              administeredDate: obj?.administeredDate,
+              dueDate: moment(obj?.dateCriterion?.[0]?.value).format('DD-MM-YYYY'),
             });
         } else {
             categorizedData[series] = [{
-              dose: obj?.doseNumberPositiveInt,
-              title: obj?.vaccineCode?.[0]?.text,
+              doseNumber: obj?.doseNumberPositiveInt,
+              vaccine: obj?.vaccineCode?.[0]?.text,
               status: obj?.forecastStatus?.coding?.[0]?.display,
-              schedule: moment(obj?.dateCriterion?.[0]?.value).format('DD-MM-YYYY'),
+              administeredDate: obj?.administeredDate,
+              dueDate: moment(obj?.dateCriterion?.[0]?.value).format('DD-MM-YYYY'),
             }];
         }
     });
@@ -217,14 +123,16 @@ export default function VaccinationSchedule() {
       if (!administeredVaccines?.includes(recommendation?.vaccineCode?.[0]?.text)) {
         return recommendation;
       }
-      // if (administeredVaccines?.includes(recommendation?.vaccineCode?.[0]?.text)) {
-      //   const item = userVaccines?.entry?.find((vaccine) => vaccine?.resource?.vaccineCode?.text === recommendation?.vaccineCode?.[0]?.text);
-
-      //   return item?.resource
-      // }
+      if (administeredVaccines?.includes(recommendation?.vaccineCode?.[0]?.text)) {
+        const item = userVaccines?.entry?.find((vaccine) => vaccine?.resource?.vaccineCode?.text === recommendation?.vaccineCode?.[0]?.text);
+        recommendation.forecastStatus.coding = [{
+          code: item?.resource?.status,
+          display: item?.resource?.status
+        }]
+        recommendation.administeredDate = item?.resource?.recorded
+        return recommendation
+      }
     }).filter(Boolean);
-
-    console.log({ rec })
 
     if (Array.isArray(recommendations)) {
       const vaccineSchedules = recommendations.map((schedule) => ({
@@ -270,6 +178,8 @@ export default function VaccinationSchedule() {
                       className="pt-2"
                     >
                       {({ open }) => {
+                        const categoryvaccines = categorizedSchedules[category]
+                        const color = colorCodeVaccines(categoryvaccines)
 
                         return (
                           <>
@@ -283,6 +193,7 @@ export default function VaccinationSchedule() {
                                       <Badge
                                         className="ml-2 vaccination-status"
                                         size="large"
+                                        color={color}
                                       />
                                     </span>
                                   </span>
@@ -307,9 +218,6 @@ export default function VaccinationSchedule() {
                               className="mt-2 md:pr-5 overflow-x-auto">
 
                               <div className='hidden md:block'>
-                                {/* <Table
-                                  theaders={tableHeaders}
-                                  data={categorizedSchedules[category]} /> */}
 
                                 <Table
                                   columns={columns}
