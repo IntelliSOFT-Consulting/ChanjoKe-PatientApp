@@ -2,7 +2,7 @@ import Table from '../components/Table';
 import { useState, useEffect } from 'react';
 
 const tableHeaders = [
-  { title: 'Dose Number', classes: 'py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6' },
+  { title: 'Dose Number', classes: 'py-3.5 pl-3 pr-3 text-left text-sm font-semibold text-gray-900' },
   { title: 'Vaccine', classes: 'px-3 py-3.5 text-left text-sm font-semibold text-gray-900' },
   { title: 'Action', classes: 'px-3 py-3.5 text-left text-sm font-semibold text-gray-900' }
 ]
