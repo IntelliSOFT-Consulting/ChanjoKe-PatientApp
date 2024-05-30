@@ -9,15 +9,22 @@ import { Spin, Empty } from 'antd';
 import { datePassed, lockVaccine } from '../utils/validate';
 
 const tableHeaders = [
-  { title: 'Date', classes: 'py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6' },
+  { title: 'Appointment Date', classes: 'py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900' },
   { title: 'Vaccine', classes: 'px-3 py-3.5 text-left text-sm font-semibold text-gray-900' },
   { title: 'Dose Number', classes: 'px-3 py-3.5 text-left text-sm font-semibold text-gray-900' },
   { title: 'Status', classes: 'px-3 py-3.5 text-left text-sm font-semibold text-gray-900' }
 ]
 
-const upcomingVaccines = [
-  { date: '12-03-2024', vaccine: 'BCG', doseNumber: '1', status: 'Upcoming' }
+const tHeaders = [
+  { title: 'Scheduled Date', classes: 'py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900' },
+  { title: 'Vaccine', classes: 'px-3 py-3.5 text-left text-sm font-semibold text-gray-900' },
+  { title: 'Dose Number', classes: 'px-3 py-3.5 text-left text-sm font-semibold text-gray-900' },
+  { title: 'Status', classes: 'px-3 py-3.5 text-left text-sm font-semibold text-gray-900' }
 ]
+
+function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
 
 function Home() {
   const [ appointmentCount, setAppointmentCount ] = useState(0)
@@ -26,6 +33,7 @@ function Home() {
   const [loading, setLoading] = useState(false)
 
   const [appointments, setAppointments] = useState([])
+  const [upcomingVaccinations, setUpcomingVaccinations] = useState([])
 
   const navigate = useNavigate()
   const { get } = useApiRequest()
@@ -41,7 +49,7 @@ function Home() {
           date: moment(item?.resource?.start).format('DD-MM-YYYY'),
           vaccine: item?.resource?.description,
           dose: '',
-          status: item?.resource?.status,
+          status: capitalizeFirstLetter(item?.resource?.status),
         }
       })
 
@@ -51,28 +59,6 @@ function Home() {
       setAppointmentCount(0)
     }
   }
-
-  // function getPassedItemsWithSameName({ passed, name, objectValues }) {
-  //   if (!passed) return []; // Return empty array if the item didn't pass
-  
-  //   let firstPassedItem = null;
-  //   const passedItems = [];
-  
-  //   return function(data) {
-  //     if (!firstPassedItem) {
-  //       // If it's the first passed item, store it and add to passedItems
-  //       firstPassedItem = { passed, name, objectValues };
-  //       passedItems.push(firstPassedItem);
-  //     } else if (name === firstPassedItem.name) {
-  //       // If subsequent item has the same name, add to passedItems
-  //       passedItems.push({ passed, name, objectValues });
-  //     }
-  //     // Return the collected passed items with the same name
-  //     return passedItems;
-  //   };
-  // }
-  
-  // const getPassedItems = getPassedItemsWithSameName();
   
   useEffect(() => {
     const userStorage = localStorage.getItem('user')
@@ -92,22 +78,36 @@ function Home() {
         return data
       })
       .then((data) => {
-        // const recommendations = data?.entry?.[0]?.resource?.recommendation
+        const recommendations = data?.entry?.[0]?.resource?.recommendation
 
-        // recommendations.map((recommendedVaccine) => {
-        //   const dueDate = recommendedVaccine?.dateCriterion?.find(item => 
-        //     item.code.coding.some(code => code.code === "Earliest-date-to-administer")
-        //   );
-        //   const lastDate = recommendedVaccine?.dateCriterion?.find(item => 
-        //     item.code.coding.some(code => code.code === "Latest-date-to-administer")
-        //   );
-        //   const passedDate = lockVaccine(moment(dueDate?.value), moment(lastDate?.value))
+        const locked = recommendations.map((recommendedVaccine) => {
+          const dueDate = recommendedVaccine?.dateCriterion?.find(item => 
+            item.code.coding.some(code => code.code === "Earliest-date-to-administer")
+          );
+          const lastDate = recommendedVaccine?.dateCriterion?.find(item => 
+            item.code.coding.some(code => code.code === "Latest-date-to-administer")
+          );
+          const passedDate = lockVaccine(moment(dueDate?.value), moment(lastDate?.value))
 
-        //   const items = getPassedItems({...passedDate, ...recommendedVaccine?.vaccineCode?.[0]?.text, ...recommendedVaccine })
+          if (passedDate === false) {
+            return recommendedVaccine
+          }
+        }).filter(Boolean);
 
-        //   return recommendedVaccine
-        // })
-        // console.log({ Immunization: data })
+        if (locked.length > 0) {
+          const firstItem = locked[0].series
+          const seriesItem = locked.filter((vaccination) => vaccination.series === firstItem)
+
+          const upcomingVaccines = seriesItem.map((item) => ({
+            date: moment(item?.dateCriterion?.[0]?.value).format('DD-MM-YYYY'),
+            vaccine: item?.vaccineCode?.[0]?.text,
+            dose: item?.doseNumberPositiveInt,
+            status: 'Upcoming',
+          }))
+
+          setUpcomingVaccinations(upcomingVaccines)
+
+        }
         setCertificateCount(0)
       })
       .catch((error) => {
@@ -174,8 +174,8 @@ function Home() {
       <div className='hidden md:block mt-5'>
         {appointments.length > 0 && !loading && <Table
           tableTitle="Upcoming Vaccinations"
-          theaders={tableHeaders}
-          data={upcomingVaccines} />}
+          theaders={tHeaders}
+          data={upcomingVaccinations} />}
       </div>
 
       {loading === true && <div className="my-10 mx-auto flex justify-center h-5 w-5">

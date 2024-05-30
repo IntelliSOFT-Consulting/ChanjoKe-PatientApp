@@ -10,6 +10,10 @@ import { LoadingOutlined } from '@ant-design/icons';
 import { datePassed, lockVaccine } from '../utils/validate';
 import { colorCodeVaccines } from '../utils/vaccineController'
 
+function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 export default function VaccinationSchedule() {
 
   const columns = [
@@ -158,9 +162,9 @@ export default function VaccinationSchedule() {
     <>
       <br className='hidden md:block' />
 
-      <h3 className='sm:hidden font-bold text-2xl'>Vaccination Schedule</h3>
+      <h3 className='font-bold text-1xl'>Vaccination Schedule</h3>
 
-      {!vaccineSchedules.length && !loading && <div className='text-center font-bold mt-5'>No Schedules found for user</div>}
+      {vaccineSchedules.length < 1 && !loading && <div className='text-center font-bold mt-5'>No Schedules found for user</div>}
 
       {vaccineSchedules.length && !loading ? (
           Object.keys(categorizedSchedules).map(
@@ -192,7 +196,7 @@ export default function VaccinationSchedule() {
 
                                       <Badge
                                         className="ml-2 vaccination-status"
-                                        size="large"
+                                        size="default"
                                         color={color}
                                       />
                                     </span>
@@ -257,7 +261,7 @@ export default function VaccinationSchedule() {
               )
           )
         ) : (
-          <div className="my-10 mx-auto flex justify-center h-5 w-5">
+          <div className="my-10 mt-10 mx-auto flex justify-center h-5 w-5">
             <Spin
               indicator={
                 <LoadingOutlined
