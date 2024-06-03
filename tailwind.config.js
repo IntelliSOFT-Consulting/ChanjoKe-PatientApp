@@ -2,10 +2,14 @@
 module.exports = {
   content: ["./src/**/*.{html,js}"],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        primary: '#163C94',
+      }
+    },
   },
   plugins: [
-    require('@tailwindcss/forms'),
+    // require('@tailwindcss/forms'),
   ],
 }
 
