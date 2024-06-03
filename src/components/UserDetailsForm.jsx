@@ -6,7 +6,13 @@ export default function UserDetailsForm() {
   const [form] = Form.useForm()
   useEffect(() => {
     const userDetails = JSON.parse(localStorage.getItem('user'))
-    form.setFieldsValue(userDetails)
+    const userInfo = JSON.parse(localStorage.getItem('userDetails'))
+    const moreDetails = {
+      county: userInfo?.address?.[0]?.line?.[0],
+      subCounty: userInfo?.address?.[0]?.line?.[1],
+      ward: userInfo?.address?.[0]?.line?.[2],
+    }
+    form.setFieldsValue({ ...userDetails, ...moreDetails })
   })
 
   return (
@@ -69,6 +75,49 @@ export default function UserDetailsForm() {
             <Input placeholder='PHONE NUMBER' className='rounded-md' type='number' disabled />
           </Form.Item>
         </Col>
+
+        <Col
+          className='gutter-row w-full'
+          md={12}
+          sm={24}>
+          <Form.Item
+            name="county"
+            className='w-full'
+            label={
+              <span>COUNTY</span>
+            }>
+            <Input placeholder='COUNTY' className='rounded-md' disabled />
+          </Form.Item>
+        </Col>
+
+        <Col
+          className='gutter-row w-full'
+          md={12}
+          sm={24}>
+          <Form.Item
+            name="subCounty"
+            className='w-full'
+            label={
+              <span>SUB COUNTY</span>
+            }>
+            <Input placeholder='SUB COUNTY' className='rounded-md' disabled />
+          </Form.Item>
+        </Col>
+
+        <Col
+          className='gutter-row w-full'
+          md={12}
+          sm={24}>
+          <Form.Item
+            name="ward"
+            className='w-full'
+            label={
+              <span>WARD</span>
+            }>
+            <Input placeholder='WARD' className='rounded-md' disabled />
+          </Form.Item>
+        </Col>
+
       </Row>
     </Form>
   )
