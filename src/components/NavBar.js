@@ -1,14 +1,26 @@
 import MOHLogo from '../assets/nav-logo.png';
 import { Link } from 'react-router-dom'
 import ProfileDropdown from './ProfileDropdown'
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { useApiRequest } from '../api/useApi';
+import calculateAge from '../utils/calculateAge';
 
 function NavBar() {
 
   const user = JSON.parse(localStorage.getItem('user'))
+  const [age, setAge] = useState('')
+
+  const { get } = useApiRequest()
+
+  const fetchUserData = async () => {
+    const response = await get(`/hapi/fhir/Patient/${user?.fhirPatientId}`)
+    const age = calculateAge(response?.birthDate)
+    localStorage.setItem('userDetails', JSON.stringify(response))
+    setAge(age)
+  }
 
   useEffect(() => {
-    console.log({ user })
+    fetchUserData()
   }, [])
 
   return (
@@ -18,9 +30,11 @@ function NavBar() {
           className="h-12"
           src={MOHLogo}
           alt="Ministry of Health"/>
+
+        <div className='ml-auto flex gap-x-1'><span className='font-bold'>AGE:</span> {age}</div>
         <Link
           to="faqs"
-          className="ml-auto flex items-center gap-x-1 rounded-md bg-[#163C94] px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+          className="ml-auto flex items-center rounded-md bg-[#163C94] px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
           FAQs
         </Link>
 
