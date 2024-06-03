@@ -1,14 +1,9 @@
 import { useEffect, useState } from 'react';
-import Table from '../components/DataTable';
 import moment from 'moment';
 import dayjs from 'dayjs';
 import { useApiRequest } from '../api/useApi';
-import { Disclosure } from '@headlessui/react';
-import { Badge, Spin, Tag } from 'antd';
-import { MinusSmallIcon, PlusSmallIcon } from '@heroicons/react/24/outline';
-import { LoadingOutlined } from '@ant-design/icons';
-import { datePassed, lockVaccine } from '../utils/validate';
-import { colorCodeVaccines } from '../utils/vaccineController'
+import { Tag } from 'antd';
+import { datePassed } from '../utils/validate';
 import BaseTabs from '../components/BaseTabs';
 
 export default function VaccinationSchedule() {
