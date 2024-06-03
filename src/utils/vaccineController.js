@@ -41,7 +41,6 @@ export const isQualified = (vaccinesSchedule, vaccine) => {
 }
 
 export const colorCodeVaccines = (vaccines, routine = true) => {
-    console.log({ vaccines })
   const allUpcoming = vaccines.every(
     (vaccine) =>
       vaccine.status === 'Due' &&
