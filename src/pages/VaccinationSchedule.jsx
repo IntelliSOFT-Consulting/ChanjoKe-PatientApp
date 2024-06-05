@@ -35,6 +35,7 @@ export default function VaccinationSchedule() {
       dataIndex: 'status',
       key: 'status',
       render: (text, record) => {
+        console.log({ text, record })
         const missed = datePassed(text, moment(record?.dueDate, 'DD-MM-YYYY').format('YYYY-MM-DD'))
         return (
           <Tag
