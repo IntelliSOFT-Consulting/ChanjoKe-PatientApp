@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react';
 import Stats from '../components/Stats';
 import Table from '../components/Table';
 import { useNavigate } from 'react-router-dom'
-import { useApiRequest } from '../api/useApi';
 import moment from 'moment';
 import { LoadingOutlined } from '@ant-design/icons';
 import { Spin, Empty } from 'antd';
 import { datePassed, lockVaccine } from '../utils/validate';
+import useAppointment from '../hooks/useAppointments';
 
 const tableHeaders = [
   { title: 'Appointment Date', classes: 'py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900' },
@@ -22,43 +22,20 @@ const tHeaders = [
   { title: 'Status', classes: 'px-3 py-3.5 text-left text-sm font-semibold text-gray-900' }
 ]
 
-function capitalizeFirstLetter(string) {
-  return string.charAt(0).toUpperCase() + string.slice(1);
-}
-
 function Home() {
-  const [ appointmentCount, setAppointmentCount ] = useState(0)
+
   const [ certificateCount, setCertificateCount ] = useState(0)
   const [ vaccineCount, setVaccineCount ] = useState(0)
-  const [loading, setLoading] = useState(false)
 
-  const [appointments, setAppointments] = useState([])
   const [upcomingVaccinations, setUpcomingVaccinations] = useState([])
 
   const navigate = useNavigate()
-  const { get } = useApiRequest()
-
-  const fetchAppointments = async (user) => {
-    setLoading(true)
-    const response = await get(`/hapi/fhir/Appointment?supporting-info=Patient/${user?.fhirPatientId}`)
-
-    setLoading(false)
-    if (response?.entry && Array.isArray(response?.entry) && response?.entry.length > 0) {
-      const appointmentData = response?.entry?.map((item) => {
-        return {
-          date: moment(item?.resource?.start).format('DD-MM-YYYY'),
-          vaccine: item?.resource?.description,
-          dose: '',
-          status: capitalizeFirstLetter(item?.resource?.status),
-        }
-      })
-
-      setAppointments(appointmentData)
-      setAppointmentCount(response?.total)
-    } else {
-      setAppointmentCount(0)
-    }
-  }
+  const {
+    loader,
+    appointments,
+    appointmentCount,
+    fetchAppointments,
+  } = useAppointment()
   
   useEffect(() => {
     const userStorage = localStorage.getItem('user')
@@ -165,20 +142,20 @@ function Home() {
       </div>
 
       <div className='hidden md:block'>
-        {appointments.length > 0 && !loading && <Table
+        {appointments.length > 0 && !loader && <Table
           tableTitle="Upcoming Appointments"
           theaders={tableHeaders}
           data={appointments} />}
       </div>
 
       <div className='hidden md:block mt-5'>
-        {appointments.length > 0 && !loading && <Table
+        {appointments.length > 0 && !loader && <Table
           tableTitle="Upcoming Vaccinations"
           theaders={tHeaders}
           data={upcomingVaccinations} />}
       </div>
 
-      {loading === true && <div className="my-10 mx-auto flex justify-center h-5 w-5">
+      {loader === true && <div className="my-10 mx-auto flex justify-center h-5 w-5">
         <Spin
           indicator={
             <LoadingOutlined
@@ -191,7 +168,7 @@ function Home() {
         />
       </div>}
 
-      {!loading && appointments.length < 1 && <Empty description="No Appointments" />}
+      {!loader && appointments.length < 1 && <Empty description="No Appointments" />}
 
       <div className="sm:hidden mt-5">
         {appointments.map((result) => (
