@@ -60,7 +60,7 @@ export default function VaccinationSchedule() {
               ? 'Contraindicated'
               : missed && text !== 'entered-in-error'
               ? 'Missed'
-              : 'Upcoming'}
+              : 'Due'}
           </Tag>
         )
       },
