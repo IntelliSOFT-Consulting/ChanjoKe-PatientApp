@@ -7,6 +7,9 @@ import { LoadingOutlined } from '@ant-design/icons';
 import { Spin, Empty } from 'antd';
 import { datePassed, lockVaccine } from '../utils/validate';
 import useAppointment from '../hooks/useAppointments';
+import useCertificate from '../hooks/useCertificates';
+import useImmunizationRecommendation from '../hooks/useImmunizationRecommendation';
+import useImmunization from '../hooks/useImmunization';
 
 const tableHeaders = [
   { title: 'Appointment Date', classes: 'py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900' },
@@ -24,9 +27,6 @@ const tHeaders = [
 
 function Home() {
 
-  const [ certificateCount, setCertificateCount ] = useState(0)
-  const [ vaccineCount, setVaccineCount ] = useState(0)
-
   const [upcomingVaccinations, setUpcomingVaccinations] = useState([])
 
   const navigate = useNavigate()
@@ -36,6 +36,18 @@ function Home() {
     appointmentCount,
     fetchAppointments,
   } = useAppointment()
+  const {
+    certificateCount,
+    fetchUserCertificates,
+  } = useCertificate()
+  const {
+    recommendations,
+    fetchUserRecommendations,
+  } = useImmunizationRecommendation()
+  const {
+    immunizationCount,
+    fetchPatientImmunizations
+  } = useImmunization()
   
   useEffect(() => {
     const userStorage = localStorage.getItem('user')
@@ -48,72 +60,51 @@ function Home() {
     const user = JSON.parse(userStorage)
 
     fetchAppointments(user)
+    fetchUserCertificates(user)
+    fetchUserRecommendations(user)
+    fetchPatientImmunizations(user)
 
-    fetch(`https://chanjoke.intellisoftkenya.com/hapi/fhir/ImmunizationRecommendation?patient=Patient/${user?.fhirPatientId}`)
-      .then((res) => {
-        const data = res.json()
-        return data
-      })
-      .then((data) => {
-        const recommendations = data?.entry?.[0]?.resource?.recommendation
-
-        const locked = recommendations.map((recommendedVaccine) => {
-          const dueDate = recommendedVaccine?.dateCriterion?.find(item => 
-            item.code.coding.some(code => code.code === "Earliest-date-to-administer")
-          );
-          const lastDate = recommendedVaccine?.dateCriterion?.find(item => 
-            item.code.coding.some(code => code.code === "Latest-date-to-administer")
-          );
-          const passedDate = lockVaccine(moment(dueDate?.value), moment(lastDate?.value))
-
-          if (passedDate === false) {
-            return recommendedVaccine
-          }
-        }).filter(Boolean);
-
-        if (locked.length > 0) {
-          const firstItem = locked[0].series
-          const seriesItem = locked.filter((vaccination) => vaccination.series === firstItem)
-
-          const upcomingVaccines = seriesItem.map((item) => ({
-            date: moment(item?.dateCriterion?.[0]?.value).format('DD-MM-YYYY'),
-            vaccine: item?.vaccineCode?.[0]?.text,
-            dose: item?.doseNumberPositiveInt,
-            status: 'Upcoming',
-          }))
-
-          setUpcomingVaccinations(upcomingVaccines)
-
-        }
-        setCertificateCount(0)
-      })
-      .catch((error) => {
-        console.log({ error })
-      })
-
-    fetch(`https://chanjoke.intellisoftkenya.com/hapi/fhir/Immunization?patient=Patient/${user?.fhirPatientId}`)
-      .then((res) => {
-        const data = res.json()
-        return data
-      })
-      .then((data) => {
-
-        if (data?.entry && Array.isArray(data?.entry) && data?.entry.length > 0) {
-          const completedVaccines = data?.entry?.filter((item) => item?.resource?.status === 'completed')
-          setVaccineCount(completedVaccines.length)
-        }
-      })
-      .catch((error) => {
-        console.log({ error })
-      })
   }, [])
+
+  useEffect(() => {
+
+    if (Array.isArray(recommendations) && recommendations.length > 0) {
+      const locked = recommendations.map((recommendedVaccine) => {
+        const dueDate = recommendedVaccine?.dateCriterion?.find(item => 
+          item.code.coding.some(code => code.code === "Earliest-date-to-administer")
+        );
+        const lastDate = recommendedVaccine?.dateCriterion?.find(item => 
+          item.code.coding.some(code => code.code === "Latest-date-to-administer")
+        );
+        const passedDate = lockVaccine(moment(dueDate?.value), moment(lastDate?.value))
+  
+        if (passedDate === false) {
+          return recommendedVaccine
+        }
+      }).filter(Boolean);
+  
+      if (locked.length > 0) {
+        const firstItem = locked[1].series
+        const seriesItem = locked.filter((vaccination) => vaccination.series === firstItem)
+  
+        const upcomingVaccines = seriesItem.map((item) => ({
+          date: moment(item?.dateCriterion?.[0]?.value).format('DD-MM-YYYY'),
+          vaccine: item?.vaccineCode?.[0]?.text,
+          dose: item?.doseNumberPositiveInt,
+          status: 'Upcoming',
+        }))
+  
+        setUpcomingVaccinations(upcomingVaccines)
+      }
+    }
+  }, [recommendations])
   return (
     <div>
       <div className='hidden md:block'>
         <Stats
           appointments={appointmentCount}
           certificates={certificateCount}
-          vaccines={vaccineCount}/>
+          vaccines={immunizationCount}/>
       </div>
 
       <br className='hidden md:block' />
