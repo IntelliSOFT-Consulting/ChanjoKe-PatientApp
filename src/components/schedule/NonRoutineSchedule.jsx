@@ -82,7 +82,7 @@ export default function NonRoutineSchedule({ schedule, columns }) {
                         >
                           {({ open }) => {
                             const categoryvaccines = categorizedSchedules[category]
-                            const color = colorCodeVaccines(categoryvaccines)
+                            const color = colorCodeVaccines(categoryvaccines, false)
 
                             return (
                               <>

@@ -13,8 +13,8 @@ import useImmunization from '../hooks/useImmunization';
 
 const tableHeaders = [
   { title: 'Appointment Date', classes: 'py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900' },
+  { title: 'Scheduled Date', classes: 'px-3 py-3.5 text-left text-sm font-semibold text-gray-900' },
   { title: 'Vaccine', classes: 'px-3 py-3.5 text-left text-sm font-semibold text-gray-900' },
-  { title: 'Dose Number', classes: 'px-3 py-3.5 text-left text-sm font-semibold text-gray-900' },
   { title: 'Status', classes: 'px-3 py-3.5 text-left text-sm font-semibold text-gray-900' }
 ]
 

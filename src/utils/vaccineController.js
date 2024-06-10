@@ -56,12 +56,7 @@ export const colorCodeVaccines = (vaccines, routine = true) => {
   )
 
   const late =
-    vaccines.every((vaccine) => vaccine.status !== 'completed') &&
-    vaccines.some((vaccine) =>
-      moment(dayjs(vaccine.dueDate, 'DD-MM-YYYY').format('YYYY-MM-DD'))
-        .add(14, 'days')
-        .isBefore(moment())
-    )
+    vaccines.every((vaccine) => vaccine.status !== 'completed')
 
   if (allAdministered) {
     return 'green'
