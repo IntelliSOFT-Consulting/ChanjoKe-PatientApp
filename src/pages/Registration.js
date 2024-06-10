@@ -19,8 +19,6 @@ function Registration() {
     try {
       const results = await post('/auth/client/register', values)
 
-      console.log({ results })
-
       if (!results) {
         setRegistrationError(true)
         // Error message is shown

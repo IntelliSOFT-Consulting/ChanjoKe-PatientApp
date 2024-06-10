@@ -1,6 +1,6 @@
-export default function Table(props) {
+import PDFdownloader from "./PDFdownloader"
 
-  const handleDownload = () => {}
+export default function Table(props) {
 
   return (
     <div className="border-b border-gray-200 rounded-lg shadow bg-white px-4 py-5 sm:px-6">
@@ -34,9 +34,9 @@ export default function Table(props) {
                         key={itemkey}
                       >
                         {itemkey === 'action' ? (
-                          <button className="text-blue-500" onClick={() => handleDownload(item['number'])}>
-                            Download
-                          </button>
+                          <div key={itemkey}>
+                            <PDFdownloader content={item?.action?.data} />
+                          </div>
                         ) : (
                           item[itemkey]
                         )}
