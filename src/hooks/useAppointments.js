@@ -21,8 +21,8 @@ export default function useAppointment() {
       const appointmentData = response?.entry?.map((item) => {
         return {
           date: moment(item?.resource?.start).format('DD-MM-YYYY'),
+          scheduledDate: moment(item?.resource?.created).format('DD-MM-YYYY'),
           vaccine: item?.resource?.description,
-          dose: '',
           status: capitalizeFirstLetter(item?.resource?.status),
         }
       })
