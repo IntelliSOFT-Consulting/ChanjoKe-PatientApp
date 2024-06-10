@@ -6,7 +6,6 @@ import { useState } from "react"
 const appointmentEndpoint = '/hapi/fhir/Appointment'
 
 export default function useAppointment() {
-  const [appointment, setAppointment] = useState({})
   const [appointments, setAppointments] = useState([])
   const [appointmentCount, setAppointmentCount] = useState(0)
   const [loader, setLoader] = useState(false)
@@ -39,7 +38,6 @@ export default function useAppointment() {
 
   return {
     loader,
-    appointment,
     appointments,
     appointmentCount,
     fetchAppointments,
