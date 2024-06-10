@@ -6,7 +6,6 @@ const immunizationEndpoint = '/hapi/fhir/Immunization'
 export default function useImmunization() {
   const { get } = useApiRequest()
 
-  const [immunizations, setImmunizations] = useState([])
   const [immunizationCount, setImmunizationCount] = useState(0)
 
   const fetchPatientImmunizations = async (user) => {
@@ -19,7 +18,6 @@ export default function useImmunization() {
   }
 
   return {
-    immunizations,
     immunizationCount,
     fetchPatientImmunizations,
   }
