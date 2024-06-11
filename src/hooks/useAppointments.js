@@ -16,7 +16,7 @@ export default function useAppointment() {
   // Fetch appointments related to a user using their user ID
   const fetchAppointments = async (user, paginationURL) => {
 
-    const url = (user && Object.keys(user).length > 0) ? `${appointmentEndpoint}?supporting-info=Patient/${user?.fhirPatientId}&_count=4` : paginationURL.replace('http://', 'https://')
+    const url = (user && Object.keys(user).length > 0) ? `${appointmentEndpoint}?supporting-info=Patient/${user?.fhirPatientId}&_count=5` : paginationURL.replace('http://', 'https://')
     setLoader(true)
     const response = await get(url)
 
