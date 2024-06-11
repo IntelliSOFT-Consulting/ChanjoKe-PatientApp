@@ -33,6 +33,7 @@ function Home() {
   const {
     loader,
     appointments,
+    appointmentsPagination,
     appointmentCount,
     fetchAppointments,
   } = useAppointment()
@@ -59,12 +60,16 @@ function Home() {
 
     const user = JSON.parse(userStorage)
 
-    fetchAppointments(user)
+    fetchAppointments(user, null)
     fetchUserCertificates(user)
     fetchUserRecommendations(user)
     fetchPatientImmunizations(user)
 
   }, [])
+
+  const updateAppointmentURL = (data) => {
+    fetchAppointments(null, data)
+  }
 
   useEffect(() => {
 
@@ -136,6 +141,8 @@ function Home() {
         {appointments.length > 0 && !loader && <Table
           tableTitle="Upcoming Appointments"
           theaders={tableHeaders}
+          link={appointmentsPagination}
+          updatePaginationURL={updateAppointmentURL}
           data={appointments} />}
       </div>
 
