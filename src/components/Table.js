@@ -1,7 +1,7 @@
 import PDFdownloader from "./PDFdownloader"
 import Pagination from "./Pagination"
 
-export default function Table({ tableTitle, theaders, data, link, updatePaginationURL}) {
+export default function DefaultTable({ tableTitle, theaders, data, link, updatePaginationURL}) {
 
   return (
     <div className="border-b border-gray-200 rounded-lg shadow bg-white px-4 py-5 sm:px-6">

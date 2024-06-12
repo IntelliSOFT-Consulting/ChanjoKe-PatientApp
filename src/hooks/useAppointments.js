@@ -14,18 +14,18 @@ export default function useAppointment() {
   const { get } = useApiRequest()
 
   // Fetch appointments related to a user using their user ID
-  const fetchAppointments = async (user, paginationURL) => {
+  const fetchAppointments = async (user, offset = 0) => {
 
-    const url = (user && Object.keys(user).length > 0) ? `${appointmentEndpoint}?supporting-info=Patient/${user?.fhirPatientId}&_count=5` : paginationURL.replace('http://', 'https://')
+    const url = offset < 1 ? `${appointmentEndpoint}?supporting-info=Patient/${user?.fhirPatientId}&_count=5` : `${appointmentEndpoint}?supporting-info=Patient/${user?.fhirPatientId}&_count=5&_offset=${offset}`
     setLoader(true)
     const response = await get(url)
 
     if (response?.entry && Array.isArray(response?.entry) && response?.entry.length > 0) {
       const appointmentData = response?.entry?.map((item) => {
         return {
-          date: moment(item?.resource?.start).format('DD-MM-YYYY'),
+          appointmentDate: moment(item?.resource?.start).format('DD-MM-YYYY'),
           scheduledDate: moment(item?.resource?.created).format('DD-MM-YYYY'),
-          vaccine: item?.resource?.description,
+          appointments: item?.resource?.description,
           status: capitalizeFirstLetter(item?.resource?.status),
         }
       })
