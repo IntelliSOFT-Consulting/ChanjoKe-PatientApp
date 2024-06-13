@@ -146,12 +146,6 @@ function Home() {
             </div>
             <div className="py-5 max-w-auto right-5">
               <div className="flex">
-                {/* <a
-                  href={`/client-details/${result.id}`}
-                  className="text-sm font-medium leading-6 text-indigo-600 hover:text-indigo-500"
-                >
-                  View
-                </a> */}
               </div>
             </div>
           </div>
