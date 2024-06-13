@@ -140,17 +140,12 @@ function Home() {
         {appointments.length > 0 && appointments.map((result) => (
           <div key={result.id} className='w-full grid grid-cols-5 gap-3 border border-1 border-gray-200'>
             <div className="py-5 pr-6 col-span-4">
-              <div className="text-sm pl-5 leading-6 text-gray-900">{result.vaccine}</div>
-              <div className="mt-1 pl-5 text-xs leading-5 text-gray-800">{result.date} - Dose: {result.dose}</div>
+              <div className="text-sm pl-5 leading-6 text-gray-900 font-bold">{result.vaccine}</div>
+              <div className="mt-1 pl-5 text-xs leading-5 text-gray-800">Appointment Date: {result.date}</div>
+              <div className="mt-1 pl-5 text-xs leading-5 text-gray-800">Scheduled Date: {result.scheduledDate}</div>
             </div>
             <div className="py-5 max-w-auto right-5">
               <div className="flex">
-                <a
-                  href={`/client-details/${result.id}`}
-                  className="text-sm font-medium leading-6 text-indigo-600 hover:text-indigo-500"
-                >
-                  View
-                </a>
               </div>
             </div>
           </div>
@@ -213,21 +208,18 @@ function Home() {
           <div key={result.id} className='w-full grid grid-cols-5 gap-3 border border-1 border-gray-200'>
             <div className="py-5 pr-6 col-span-4">
               <div className="text-sm pl-5 leading-6 text-gray-900">{result.vaccine}</div>
-              <div className="mt-1 pl-5 text-xs leading-5 text-gray-800">{result.date} - Dose: {result.dose}</div>
+              <div className="mt-1 pl-5 text-xs leading-5 text-gray-800">Appointment Date: {result.date}</div>
+              <div className="mt-1 pl-5 text-xs leading-5 text-gray-800">Scheduled Date: {result.scheduledDate}</div>
             </div>
             <div className="py-5 max-w-auto right-5">
               <div className="flex">
-                <a
-                  href='#'
-                  className="text-sm font-medium leading-6 text-indigo-600 hover:text-indigo-500"
-                >
-                  View
-                </a>
               </div>
             </div>
           </div>
         ))}
       </div>
+
+      {!loader && upcomingVaccinations.length < 1 && <Empty description="No Upcoming vaccinations" />}
 
     </div>
   );

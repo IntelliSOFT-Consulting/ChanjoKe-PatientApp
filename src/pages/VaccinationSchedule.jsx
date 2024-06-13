@@ -5,6 +5,8 @@ import { useApiRequest } from '../api/useApi';
 import { Tag } from 'antd';
 import { datePassed } from '../utils/validate';
 import BaseTabs from '../components/BaseTabs';
+import useImmunizationRecommendation from '../hooks/useImmunizationRecommendation'
+import useImmunization from '../hooks/useImmunization'
 
 export default function VaccinationSchedule() {
 
@@ -68,26 +70,32 @@ export default function VaccinationSchedule() {
   ]
 
   const { get } = useApiRequest()
+  const {
+    recommendations,
+    fetchUserRecommendations,
+  } = useImmunizationRecommendation()
+  const {
+    immunizations,
+    fetchPatientImmunizations,
+  } = useImmunization()
+  const user = JSON.parse(localStorage.getItem('user'))
 
   const [vaccineSchedules, setVaccineSchedules] = useState([])
-  const [loading, setLoader] = useState(false)
 
-  const fetchUserSchedule = async () => {
-    setLoader(true)
-    const user = JSON.parse(localStorage.getItem('user'))
-    const userSchedule = await get(`/hapi/fhir/ImmunizationRecommendation?patient=Patient/${user?.fhirPatientId}`)
+  useEffect(() => {
+    fetchUserRecommendations(user)
+    fetchPatientImmunizations(user)
+  }, [])
 
-    const userVaccines = await get(`/hapi/fhir/Immunization?patient=Patient/${user?.fhirPatientId}`)
-    const administeredVaccines = userVaccines?.entry?.map((vaccine) => vaccine?.resource?.vaccineCode?.text)
+  useEffect(() => {
+    const administeredVaccines = immunizations?.map((vaccine) => vaccine?.resource?.vaccineCode?.text)
 
-    const recommendations = userSchedule?.entry?.[0]?.resource?.recommendation
-
-    const rec = recommendations.map(recommendation => {
+    recommendations.map(recommendation => {
       if (!administeredVaccines?.includes(recommendation?.vaccineCode?.[0]?.text)) {
         return recommendation;
       }
       if (administeredVaccines?.includes(recommendation?.vaccineCode?.[0]?.text)) {
-        const item = userVaccines?.entry?.find((vaccine) => vaccine?.resource?.vaccineCode?.text === recommendation?.vaccineCode?.[0]?.text);
+        const item = immunizations?.find((vaccine) => vaccine?.resource?.vaccineCode?.text === recommendation?.vaccineCode?.[0]?.text);
         recommendation.forecastStatus.coding = [{
           code: item?.resource?.status,
           display: item?.resource?.status
@@ -100,18 +108,13 @@ export default function VaccinationSchedule() {
     if (Array.isArray(recommendations)) {
       setVaccineSchedules(recommendations)
     }
-    setLoader(false)
-  }
-
-  useEffect(() => {
-    fetchUserSchedule()
-  }, [])
+  }, [immunizations, recommendations])
 
   return (
     <>
       <br className='hidden md:block' />
 
-      {vaccineSchedules.length > 1 && !loading &&
+      {vaccineSchedules.length > 1 &&
         <>
           <div className="mt-4">
             <BaseTabs data={vaccineSchedules} columns={columns}/>

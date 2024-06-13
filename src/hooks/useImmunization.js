@@ -7,6 +7,7 @@ export default function useImmunization() {
   const { get } = useApiRequest()
 
   const [immunizationCount, setImmunizationCount] = useState(0)
+  const [immunizations, setImmunizations] = useState([])
 
   const fetchPatientImmunizations = async (user) => {
     const response = await get(`${immunizationEndpoint}?patient=Patient/${user?.fhirPatientId}`)
@@ -14,10 +15,12 @@ export default function useImmunization() {
     if (response?.entry && Array.isArray(response?.entry) && response?.entry.length > 0) {
       const completedVaccines = response?.entry?.filter((item) => item?.resource?.status === 'completed')
       setImmunizationCount(completedVaccines.length)
+      setImmunizations(response?.entry)
     }
   }
 
   return {
+    immunizations,
     immunizationCount,
     fetchPatientImmunizations,
   }
