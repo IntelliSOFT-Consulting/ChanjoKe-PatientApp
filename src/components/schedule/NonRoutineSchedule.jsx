@@ -72,7 +72,6 @@ export default function NonRoutineSchedule({ schedule, columns }) {
                       key={category}
                       className="mt-5 space-y-6 divide-y divide-gray-900/10"
                     >
-                      { console.log({ categorizedSchedules })}
                       <div className="overflow-hidden rounded-lg bg-gray-100 px-4 py-4 mt-5 shadow">
                         <Disclosure
                           as="div"

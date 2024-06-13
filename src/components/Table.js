@@ -1,12 +1,13 @@
 import PDFdownloader from "./PDFdownloader"
+import Pagination from "./Pagination"
 
-export default function Table(props) {
+export default function DefaultTable({ tableTitle, theaders, data, link, updatePaginationURL}) {
 
   return (
     <div className="border-b border-gray-200 rounded-lg shadow bg-white px-4 py-5 sm:px-6">
-      {props.tableTitle && <div className="sm:flex sm:items-center">
+      {tableTitle && <div className="sm:flex sm:items-center">
         <h1 className="font-semibold text-1xl">
-          {props.tableTitle}
+          {tableTitle}
         </h1>
       </div>}
       <div className="mt-8 flow-root mb-10">
@@ -16,7 +17,7 @@ export default function Table(props) {
               <table className="min-w-full divide-y divide-gray-300">
                 <thead className="bg-gray-100">
                   <tr className="divide-x divide-gray-200">
-                    {props.theaders.map((header) => (
+                    {theaders.map((header) => (
                       <th scope="col" className={header.classes}>
                         {header.title}
                       </th>
@@ -24,12 +25,12 @@ export default function Table(props) {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200 bg-white">
-                {props.data?.map((item, index) => (
+                {data?.map((item, index) => (
                   <tr className="divide-x divide-gray-200" key={index}>
                     {Object.keys(item).map((itemkey) => (
                       <td
                         className={`whitespace-nowrap py-4 pl-4 pr-3 text-sm ${
-                          props.theaders.find((header) => header?.title === itemkey)?.classes || ''
+                          theaders.find((header) => header?.title === itemkey)?.classes || ''
                         }`}
                         key={itemkey}
                       >
@@ -50,6 +51,8 @@ export default function Table(props) {
           </div>
         </div>
       </div>
+
+      <Pagination link={link} updateURL={updatePaginationURL} />
     </div>
   )
 }

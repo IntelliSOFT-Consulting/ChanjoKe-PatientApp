@@ -1,22 +1,17 @@
 import { useEffect, useState } from 'react';
 import Stats from '../components/Stats';
-import Table from '../components/Table';
+import Table from '../components/DataTable';
+import DefaultTable from '../components/Table';
 import { useNavigate } from 'react-router-dom'
 import moment from 'moment';
 import { LoadingOutlined } from '@ant-design/icons';
-import { Spin, Empty } from 'antd';
-import { datePassed, lockVaccine } from '../utils/validate';
+import { Spin } from 'antd';
+import { lockVaccine } from '../utils/validate';
+import { getOffset } from '../utils/methods';
 import useAppointment from '../hooks/useAppointments';
 import useCertificate from '../hooks/useCertificates';
 import useImmunizationRecommendation from '../hooks/useImmunizationRecommendation';
 import useImmunization from '../hooks/useImmunization';
-
-const tableHeaders = [
-  { title: 'Appointment Date', classes: 'py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900' },
-  { title: 'Scheduled Date', classes: 'px-3 py-3.5 text-left text-sm font-semibold text-gray-900' },
-  { title: 'Vaccine', classes: 'px-3 py-3.5 text-left text-sm font-semibold text-gray-900' },
-  { title: 'Status', classes: 'px-3 py-3.5 text-left text-sm font-semibold text-gray-900' }
-]
 
 const tHeaders = [
   { title: 'Scheduled Date', classes: 'py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900' },
@@ -28,6 +23,7 @@ const tHeaders = [
 function Home() {
 
   const [upcomingVaccinations, setUpcomingVaccinations] = useState([])
+  const [user, setUser] = useState({})
 
   const navigate = useNavigate()
   const {
@@ -57,14 +53,19 @@ function Home() {
       navigate("/auth")
     }
 
-    const user = JSON.parse(userStorage)
+    setUser(JSON.parse(userStorage))
 
-    fetchAppointments(user)
+    fetchAppointments(user, null)
     fetchUserCertificates(user)
     fetchUserRecommendations(user)
     fetchPatientImmunizations(user)
 
   }, [])
+
+  const updateAppointmentURL = (page) => {
+    const offset = getOffset(page, 5)
+    fetchAppointments(user, offset)
+  }
 
   useEffect(() => {
 
@@ -98,6 +99,30 @@ function Home() {
       }
     }
   }, [recommendations])
+
+  const columns = [
+    {
+      title: 'Appointments',
+      dataIndex: 'appointments',
+      key: 'appointments',
+    },
+    {
+      title: 'Scheduled Date',
+      dataIndex: 'scheduledDate',
+      key: 'scheduledDate',
+    },
+    {
+      title: 'Appointment Date',
+      dataIndex: 'appointmentDate',
+      key: 'appointmentDate',
+    },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
+    },
+  ]
+  
   return (
     <div>
       <div className='hidden md:block'>
@@ -112,7 +137,7 @@ function Home() {
       <h3 className='sm:hidden font-bold text-2xl'>Vaccination Appointments</h3>
 
       <div className="sm:hidden mt-5">
-        {appointments.map((result) => (
+        {appointments.length > 0 && appointments.map((result) => (
           <div key={result.id} className='w-full grid grid-cols-5 gap-3 border border-1 border-gray-200'>
             <div className="py-5 pr-6 col-span-4">
               <div className="text-sm pl-5 leading-6 text-gray-900">{result.vaccine}</div>
@@ -133,14 +158,38 @@ function Home() {
       </div>
 
       <div className='hidden md:block'>
-        {appointments.length > 0 && !loader && <Table
-          tableTitle="Upcoming Appointments"
-          theaders={tableHeaders}
-          data={appointments} />}
+        <h1 className="font-semibold text-1xl mb-3">
+          Appointments
+        </h1>
+        {appointments.length > 0 && !loader && 
+          <Table
+            columns={columns}
+            dataSource={appointments}
+            size="small"
+            loading={loader}
+            pagination={{
+              pageSize: 5,
+              showSizeChanger: false,
+              hideOnSinglePage: true,
+              showTotal: (total) => `Total ${total} items`,
+              total: appointmentCount - 1,
+              onChange: (page) => updateAppointmentURL(page),
+            }}
+            locale={{
+              emptyText: (
+                <div className="flex flex-col items-center justify-center">
+                  <p className="text-gray-400 text-sm my-2">
+                    No Appointments
+                  </p>
+                </div>
+              ),
+            }}
+          />
+        }
       </div>
 
       <div className='hidden md:block mt-5'>
-        {appointments.length > 0 && !loader && <Table
+        {appointments.length > 0 && !loader && <DefaultTable
           tableTitle="Upcoming Vaccinations"
           theaders={tHeaders}
           data={upcomingVaccinations} />}
@@ -159,10 +208,8 @@ function Home() {
         />
       </div>}
 
-      {!loader && appointments.length < 1 && <Empty description="No Appointments" />}
-
       <div className="sm:hidden mt-5">
-        {appointments.map((result) => (
+        {appointments.length > 0 && appointments.map((result) => (
           <div key={result.id} className='w-full grid grid-cols-5 gap-3 border border-1 border-gray-200'>
             <div className="py-5 pr-6 col-span-4">
               <div className="text-sm pl-5 leading-6 text-gray-900">{result.vaccine}</div>
