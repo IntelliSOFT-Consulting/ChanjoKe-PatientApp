@@ -5,7 +5,7 @@ import DefaultTable from '../components/Table';
 import { useNavigate } from 'react-router-dom'
 import moment from 'moment';
 import { LoadingOutlined } from '@ant-design/icons';
-import { Spin } from 'antd';
+import { Spin, Empty } from 'antd';
 import { lockVaccine } from '../utils/validate';
 import { getOffset } from '../utils/methods';
 import useAppointment from '../hooks/useAppointments';
