@@ -54,13 +54,14 @@ function Home() {
     }
 
     setUser(JSON.parse(userStorage))
+  }, [])
 
+  useEffect(() => {
     fetchAppointments(user, null)
     fetchUserCertificates(user)
     fetchUserRecommendations(user)
     fetchPatientImmunizations(user)
-
-  }, [])
+  }, [user])
 
   const updateAppointmentURL = (page) => {
     const offset = getOffset(page, 5)
