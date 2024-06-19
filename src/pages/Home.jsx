@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom'
 import moment from 'moment';
 import { LoadingOutlined } from '@ant-design/icons';
 import { Spin, Empty } from 'antd';
-import { lockVaccine } from '../utils/validate';
+import { datePassed, lockVaccine } from '../utils/validate';
 import { getOffset } from '../utils/methods';
 import useAppointment from '../hooks/useAppointments';
 import useCertificate from '../hooks/useCertificates';
@@ -93,7 +93,7 @@ function Home() {
           date: moment(item?.dateCriterion?.[0]?.value).format('DD-MM-YYYY'),
           vaccine: item?.vaccineCode?.[0]?.text,
           dose: item?.doseNumberPositiveInt,
-          status: 'Upcoming',
+          status: 'Due',
         }))
   
         setUpcomingVaccinations(upcomingVaccines)
@@ -141,8 +141,8 @@ function Home() {
         {appointments.length > 0 && appointments.map((result) => (
           <div key={result.id} className='w-full grid grid-cols-5 gap-3 border border-1 border-gray-200'>
             <div className="py-5 pr-6 col-span-4">
-              <div className="text-sm pl-5 leading-6 text-gray-900 font-bold">{result.vaccine}</div>
-              <div className="mt-1 pl-5 text-xs leading-5 text-gray-800">Appointment Date: {result.date}</div>
+              <div className="text-sm pl-5 leading-6 text-gray-900 font-bold">{result.appointments}</div>
+              <div className="mt-1 pl-5 text-xs leading-5 text-gray-800">Appointment Date: {result.appointmentDate}</div>
               <div className="mt-1 pl-5 text-xs leading-5 text-gray-800">Scheduled Date: {result.scheduledDate}</div>
             </div>
             <div className="py-5 max-w-auto right-5">

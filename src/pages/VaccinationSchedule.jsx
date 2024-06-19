@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import moment from 'moment';
 import dayjs from 'dayjs';
-import { useApiRequest } from '../api/useApi';
+import { lockVaccine } from '../utils/validate';
 import { Tag } from 'antd';
 import { datePassed } from '../utils/validate';
 import BaseTabs from '../components/BaseTabs';
@@ -62,14 +62,15 @@ export default function VaccinationSchedule() {
               ? 'Contraindicated'
               : missed && text !== 'entered-in-error'
               ? 'Missed'
-              : 'Due'}
+              : moment().isAfter(moment(record?.dueDate, 'DD-MM-YYYY').format('YYYY-MM-DD'))
+              ? 'Due'
+              : 'Upcoming' }
           </Tag>
         )
       },
     },
   ]
 
-  const { get } = useApiRequest()
   const {
     recommendations,
     fetchUserRecommendations,
