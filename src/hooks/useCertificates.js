@@ -21,7 +21,7 @@ export default function useCertificate() {
         action: { text: 'Download', data: item?.resource?.content?.[0]?.attachment },
       }))
       setCertificates(certificateData)
-      setCertificateCount(response?.total)
+      setCertificateCount(response?.total || response?.entry?.length)
     }
 
   }
