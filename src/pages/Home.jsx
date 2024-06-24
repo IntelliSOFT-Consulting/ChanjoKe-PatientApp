@@ -23,6 +23,7 @@ const tHeaders = [
 function Home() {
 
   const [upcomingVaccinations, setUpcomingVaccinations] = useState([])
+  const [vaccinationAppointments, setVaccinationAppointments] = useState([])
   const [user, setUser] = useState({})
 
   const navigate = useNavigate()
@@ -42,6 +43,7 @@ function Home() {
   } = useImmunizationRecommendation()
   const {
     immunizationCount,
+    immunizations,
     fetchPatientImmunizations
   } = useImmunization()
   
@@ -84,6 +86,12 @@ function Home() {
           return recommendedVaccine
         }
       }).filter(Boolean);
+
+      const completedImmunizations = immunizations.filter((immunization) => immunization?.resource?.status === 'completed')
+      const completedImmunizationVaccineNames = completedImmunizations.map((immunization) => immunization?.resource?.vaccineCode?.text)
+
+      const unvaccinatedAppointments = appointments.filter((appointment) => !completedImmunizationVaccineNames.includes(appointment.appointments))
+      setVaccinationAppointments(unvaccinatedAppointments)
   
       if (locked.length > 0) {
         const firstItem = locked[1].series
@@ -128,7 +136,7 @@ function Home() {
     <div>
       <div className='hidden md:block'>
         <Stats
-          appointments={appointmentCount}
+          appointments={vaccinationAppointments.length}
           certificates={certificateCount}
           vaccines={immunizationCount}/>
       </div>
@@ -138,7 +146,7 @@ function Home() {
       <h3 className='sm:hidden font-bold text-2xl'>Vaccination Appointments</h3>
 
       <div className="sm:hidden mt-5">
-        {appointments.length > 0 && appointments.map((result) => (
+        {vaccinationAppointments.length > 0 && vaccinationAppointments.map((result) => (
           <div key={result.id} className='w-full grid grid-cols-5 gap-3 border border-1 border-gray-200'>
             <div className="py-5 pr-6 col-span-4">
               <div className="text-sm pl-5 leading-6 text-gray-900 font-bold">{result.appointments}</div>
@@ -157,10 +165,10 @@ function Home() {
         <h1 className="font-semibold text-1xl mb-3">
           Appointments
         </h1>
-        {appointments.length > 0 && !loader && 
+        {vaccinationAppointments.length > 0 && !loader && 
           <Table
             columns={columns}
-            dataSource={appointments}
+            dataSource={vaccinationAppointments}
             size="small"
             loading={loader}
             pagination={{
