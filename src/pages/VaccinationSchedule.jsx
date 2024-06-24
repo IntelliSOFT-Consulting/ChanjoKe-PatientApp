@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import moment from 'moment';
 import dayjs from 'dayjs';
-import { lockVaccine } from '../utils/validate';
 import { Tag } from 'antd';
 import { datePassed } from '../utils/validate';
 import BaseTabs from '../components/BaseTabs';
