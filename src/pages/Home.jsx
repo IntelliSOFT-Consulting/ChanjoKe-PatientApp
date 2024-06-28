@@ -97,12 +97,14 @@ function Home() {
         const firstItem = locked[1].series
         const seriesItem = locked.filter((vaccination) => vaccination.series === firstItem)
   
-        const upcomingVaccines = seriesItem.map((item) => ({
+        const seriesvaccinations = seriesItem.map((item) => ({
           date: moment(item?.dateCriterion?.[0]?.value).format('DD-MM-YYYY'),
           vaccine: item?.vaccineCode?.[0]?.text,
           dose: item?.doseNumberPositiveInt,
           status: 'Due',
         }))
+
+        const upcomingVaccines = seriesvaccinations.filter((upcoming) => !completedImmunizationVaccineNames.includes(upcoming.vaccine))
   
         setUpcomingVaccinations(upcomingVaccines)
       }
