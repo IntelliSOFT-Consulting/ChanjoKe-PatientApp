@@ -97,12 +97,14 @@ function Home() {
         const firstItem = locked[1].series
         const seriesItem = locked.filter((vaccination) => vaccination.series === firstItem)
   
-        const upcomingVaccines = seriesItem.map((item) => ({
+        const seriesvaccinations = seriesItem.map((item) => ({
           date: moment(item?.dateCriterion?.[0]?.value).format('DD-MM-YYYY'),
           vaccine: item?.vaccineCode?.[0]?.text,
           dose: item?.doseNumberPositiveInt,
           status: 'Due',
         }))
+
+        const upcomingVaccines = seriesvaccinations.filter((upcoming) => !completedImmunizationVaccineNames.includes(upcoming.vaccine))
   
         setUpcomingVaccinations(upcomingVaccines)
       }
@@ -162,10 +164,12 @@ function Home() {
       </div>
 
       <div className='hidden md:block'>
-        <h1 className="font-semibold text-1xl mb-3">
-          Appointments
-        </h1>
-        {vaccinationAppointments.length > 0 && !loader && 
+      {vaccinationAppointments.length > 0 && !loader && 
+        <>
+          <h1 className="font-semibold text-1xl mb-3">
+            Appointments
+          </h1>
+        
           <Table
             columns={columns}
             dataSource={vaccinationAppointments}
@@ -189,11 +193,14 @@ function Home() {
               ),
             }}
           />
+        </>
         }
       </div>
 
+      {!loader && vaccinationAppointments.length < 1 && <Empty description="No Upcoming appointments" />}
+
       <div className='hidden md:block mt-5'>
-        {appointments.length > 0 && !loader && <DefaultTable
+        {upcomingVaccinations.length > 0 && !loader && <DefaultTable
           tableTitle="Upcoming Vaccinations"
           theaders={tHeaders}
           data={upcomingVaccinations} />}

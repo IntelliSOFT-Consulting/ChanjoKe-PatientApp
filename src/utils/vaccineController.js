@@ -44,7 +44,7 @@ export const colorCodeVaccines = (vaccines, routine = true) => {
   const allUpcoming = vaccines.every(
     (vaccine) =>
       vaccine.status === 'Due' &&
-      moment(dayjs(vaccine.dueDate, 'DD-MM-YYYY').format('YYYY-MM-DD')).isAfter(moment())
+        moment(moment(vaccine.dueDate, 'DD-MM-YYYY').format('YYYY-MM-DD')).isAfter(moment())
   )
 
   const allAdministered = vaccines.every(
@@ -56,19 +56,23 @@ export const colorCodeVaccines = (vaccines, routine = true) => {
   )
 
   const late =
-    vaccines.every((vaccine) => vaccine.status !== 'completed')
+    vaccines.every(
+      ((vaccine) => vaccine.status !== 'completed' &&
+      moment(moment(vaccine.dueDate, 'DD-MM-YYYY').format('YYYY-MM-DD')).isBefore(moment())))
+
+  const dueVaccine = vaccines.every((vaccine) => moment(moment(vaccine.dueDate, 'DD-MM-  YYYY').format('YYYY-MM-DD')).isSame(moment(), 'day'))
 
   if (allAdministered) {
     return 'green'
   }
-  if (allUpcoming) {
+  if (allUpcoming || dueVaccine) {
     return 'gray'
-  }
-  if (late && routine) {
-    return 'red'
   }
   if (someAdministered) {
     return 'orange'
+  }
+  if (late && routine) {
+    return 'red'
   }
 
   return 'gray'
