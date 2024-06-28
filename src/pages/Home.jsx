@@ -162,10 +162,12 @@ function Home() {
       </div>
 
       <div className='hidden md:block'>
-        <h1 className="font-semibold text-1xl mb-3">
-          Appointments
-        </h1>
-        {vaccinationAppointments.length > 0 && !loader && 
+      {vaccinationAppointments.length > 0 && !loader && 
+        <>
+          <h1 className="font-semibold text-1xl mb-3">
+            Appointments
+          </h1>
+        
           <Table
             columns={columns}
             dataSource={vaccinationAppointments}
@@ -189,11 +191,14 @@ function Home() {
               ),
             }}
           />
+        </>
         }
       </div>
 
+      {!loader && vaccinationAppointments.length < 1 && <Empty description="No Upcoming appointments" />}
+
       <div className='hidden md:block mt-5'>
-        {appointments.length > 0 && !loader && <DefaultTable
+        {upcomingVaccinations.length > 0 && !loader && <DefaultTable
           tableTitle="Upcoming Vaccinations"
           theaders={tHeaders}
           data={upcomingVaccinations} />}
