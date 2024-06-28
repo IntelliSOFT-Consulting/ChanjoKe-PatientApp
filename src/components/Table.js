@@ -17,8 +17,8 @@ export default function DefaultTable({ tableTitle, theaders, data, link, updateP
               <table className="min-w-full divide-y divide-gray-300">
                 <thead className="bg-gray-100">
                   <tr className="divide-x divide-gray-200">
-                    {theaders.map((header) => (
-                      <th scope="col" className={header.classes}>
+                    {theaders.map((header, index) => (
+                      <th scope="col" key={index} className={header.classes}>
                         {header.title}
                       </th>
                     ))}
