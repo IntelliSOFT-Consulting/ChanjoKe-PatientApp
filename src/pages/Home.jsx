@@ -79,7 +79,13 @@ function Home() {
       const unvaccinatedAppointments = appointments.filter((appointment) => !completedImmunizationVaccineNames.includes(appointment.appointments))
       setVaccinationAppointments(unvaccinatedAppointments)
 
-      const upcoming = recommendations.map((vaccine) => {
+      const appointmentNames = appointments.map((appointment) => appointment.appointments)
+      const incompleteVaccinations = recommendations.filter((rec) => !completedImmunizationVaccineNames.includes(rec?.vaccineCode?.[0]?.text))
+      const validRecommendations = incompleteVaccinations.filter((rec) => 
+        (!appointmentNames.includes(rec?.vaccineCode?.[0]?.text) || !completedImmunizationVaccineNames.includes(rec?.vaccineCode?.[0]?.text))
+      )
+
+      const upcoming = validRecommendations.map((vaccine) => {
         const dueDate = vaccine?.dateCriterion?.find(item => item.code.coding.some(code => code.code === "Earliest-date-to-administer"))
         if (moment().isSame(dueDate.value, 'day')) {
           return vaccine
