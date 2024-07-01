@@ -30,6 +30,8 @@ export default function useCertificate() {
       setCertificates(certificateData)
       setCertificateCount(response?.total || response?.entry?.length)
       setLoader(false)
+    } else {
+      setLoader(false)
     }
 
   }

@@ -6,7 +6,6 @@ import { useNavigate } from 'react-router-dom'
 import moment from 'moment';
 import { LoadingOutlined } from '@ant-design/icons';
 import { Spin, Empty } from 'antd';
-import { lockVaccine } from '../utils/validate';
 import { getOffset } from '../utils/methods';
 import useAppointment from '../hooks/useAppointments';
 import useCertificate from '../hooks/useCertificates';
@@ -73,43 +72,35 @@ function Home() {
   useEffect(() => {
 
     if (Array.isArray(recommendations) && recommendations.length > 0) {
-      const locked = recommendations.map((recommendedVaccine) => {
-        const dueDate = recommendedVaccine?.dateCriterion?.find(item => 
-          item.code.coding.some(code => code.code === "Earliest-date-to-administer")
-        );
-        const lastDate = recommendedVaccine?.dateCriterion?.find(item => 
-          item.code.coding.some(code => code.code === "Latest-date-to-administer")
-        );
-        const passedDate = lockVaccine(moment(dueDate?.value), moment(lastDate?.value))
-  
-        if (passedDate === false) {
-          return recommendedVaccine
-        }
-      }).filter(Boolean);
-
       const completedImmunizations = immunizations.filter((immunization) => immunization?.resource?.status === 'completed')
       const completedImmunizationVaccineNames = completedImmunizations.map((immunization) => immunization?.resource?.vaccineCode?.text)
 
       const unvaccinatedAppointments = appointments.filter((appointment) => !completedImmunizationVaccineNames.includes(appointment.appointments))
       setVaccinationAppointments(unvaccinatedAppointments)
-  
-      if (locked.length > 0) {
-        const firstItem = locked[1].series
-        const seriesItem = locked.filter((vaccination) => vaccination.series === firstItem)
-  
-        const seriesvaccinations = seriesItem.map((item) => ({
-          date: moment(item?.dateCriterion?.[0]?.value).format('DD-MM-YYYY'),
-          vaccine: item?.vaccineCode?.[0]?.text,
-          dose: item?.doseNumberPositiveInt,
-          status: 'Due',
-        }))
 
-        const upcomingVaccines = seriesvaccinations.filter((upcoming) => !completedImmunizationVaccineNames.includes(upcoming.vaccine))
-  
-        setUpcomingVaccinations(upcomingVaccines)
-      }
+      const appointmentNames = appointments.map((appointment) => appointment.appointments)
+      const incompleteVaccinations = recommendations.filter((rec) => !completedImmunizationVaccineNames.includes(rec?.vaccineCode?.[0]?.text))
+      const validRecommendations = incompleteVaccinations.filter((rec) => 
+        (!appointmentNames.includes(rec?.vaccineCode?.[0]?.text) || !completedImmunizationVaccineNames.includes(rec?.vaccineCode?.[0]?.text))
+      )
+
+      const upcoming = validRecommendations.map((vaccine) => {
+        const dueDate = vaccine?.dateCriterion?.find(item => item.code.coding.some(code => code.code === "Earliest-date-to-administer"))
+        if (moment().isSame(dueDate.value, 'day')) {
+          return vaccine
+        }
+      }).filter(Boolean)
+
+      const vaccinesScheduledToday = upcoming.map((item) => ({
+        date: moment(item?.dateCriterion?.[0]?.value).format('DD-MM-YYYY'),
+        vaccine: item?.vaccineCode?.[0]?.text,
+        dose: item?.doseNumberPositiveInt,
+        status: 'Due',
+      }))
+
+      setUpcomingVaccinations(vaccinesScheduledToday)
     }
-  }, [recommendations])
+  }, [recommendations, appointments])
 
   const columns = [
     {
@@ -148,8 +139,8 @@ function Home() {
       <h3 className='sm:hidden font-bold text-2xl'>Vaccination Appointments</h3>
 
       <div className="sm:hidden mt-5">
-        {vaccinationAppointments.length > 0 && vaccinationAppointments.map((result) => (
-          <div key={result.id} className='w-full grid grid-cols-5 gap-3 border border-1 border-gray-200'>
+        {vaccinationAppointments.length > 0 && vaccinationAppointments.map((result, index) => (
+          <div key={index} className='w-full grid grid-cols-5 gap-3 border border-1 border-gray-200'>
             <div className="py-5 pr-6 col-span-4">
               <div className="text-sm pl-5 leading-6 text-gray-900 font-bold">{result.appointments}</div>
               <div className="mt-1 pl-5 text-xs leading-5 text-gray-800">Appointment Date: {result.appointmentDate}</div>
