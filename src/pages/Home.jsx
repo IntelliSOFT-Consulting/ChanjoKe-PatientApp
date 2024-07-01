@@ -80,9 +80,7 @@ function Home() {
 
       const appointmentNames = appointments.map((appointment) => appointment.appointments)
       const incompleteVaccinations = recommendations.filter((rec) => !completedImmunizationVaccineNames.includes(rec?.vaccineCode?.[0]?.text))
-      const validRecommendations = incompleteVaccinations.filter((rec) => 
-        (!appointmentNames.includes(rec?.vaccineCode?.[0]?.text) || !completedImmunizationVaccineNames.includes(rec?.vaccineCode?.[0]?.text))
-      )
+      const validRecommendations = incompleteVaccinations.filter((rec) => !appointmentNames.includes(rec?.vaccineCode?.[0]?.text))
 
       const upcoming = validRecommendations.map((vaccine) => {
         const dueDate = vaccine?.dateCriterion?.find(item => item.code.coding.some(code => code.code === "Earliest-date-to-administer"))
@@ -100,7 +98,7 @@ function Home() {
 
       setUpcomingVaccinations(vaccinesScheduledToday)
     }
-  }, [recommendations, appointments])
+  }, [recommendations, appointments, immunizations])
 
   const columns = [
     {
