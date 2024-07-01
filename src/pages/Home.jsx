@@ -6,7 +6,6 @@ import { useNavigate } from 'react-router-dom'
 import moment from 'moment';
 import { LoadingOutlined } from '@ant-design/icons';
 import { Spin, Empty } from 'antd';
-import { lockVaccine } from '../utils/validate';
 import { getOffset } from '../utils/methods';
 import useAppointment from '../hooks/useAppointments';
 import useCertificate from '../hooks/useCertificates';
@@ -101,7 +100,7 @@ function Home() {
 
       setUpcomingVaccinations(vaccinesScheduledToday)
     }
-  }, [recommendations])
+  }, [recommendations, appointments])
 
   const columns = [
     {

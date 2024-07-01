@@ -6,6 +6,8 @@ import { datePassed } from '../utils/validate';
 import BaseTabs from '../components/BaseTabs';
 import useImmunizationRecommendation from '../hooks/useImmunizationRecommendation'
 import useImmunization from '../hooks/useImmunization'
+import { LoadingOutlined } from '@ant-design/icons';
+import { Spin } from 'antd';
 
 export default function VaccinationSchedule() {
 
@@ -71,6 +73,7 @@ export default function VaccinationSchedule() {
   ]
 
   const {
+    loader,
     recommendations,
     fetchUserRecommendations,
   } = useImmunizationRecommendation()
@@ -116,9 +119,25 @@ export default function VaccinationSchedule() {
 
       {vaccineSchedules.length > 1 &&
         <>
-          <div className="mt-4">
-            <BaseTabs data={vaccineSchedules} columns={columns}/>
-          </div>
+          {loader === true &&
+            <div className="my-10 mx-auto flex justify-center h-5 w-5">
+              <Spin
+                indicator={
+                  <LoadingOutlined
+                    style={{
+                      fontSize: 72,
+                    }}
+                    spin
+                  />
+                }
+              />
+            </div>
+          }
+          {!loader &&
+            <div className="mt-4">
+              <BaseTabs data={vaccineSchedules} columns={columns}/>
+            </div>
+          }
         </>
       }
 
