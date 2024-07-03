@@ -5,8 +5,8 @@ import { Spin, Empty } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 
 const tableHeaders = [
-  { title: 'Vaccination Date', classes: 'py-3.5 pl-3 pr-3 text-left text-sm font-semibold text-gray-900' },
-  { title: 'Vaccine', classes: 'px-3 py-3.5 text-left text-sm font-semibold text-gray-900' },
+  { title: 'Vaccine', classes: 'py-3.5 pl-3 pr-3 text-left text-sm font-semibold text-gray-900' },
+  { title: 'Vaccination Date', classes: 'px-3 py-3.5 text-left text-sm font-semibold text-gray-900' },
   { title: 'Action', classes: 'px-3 py-3.5 text-left text-sm font-semibold text-gray-900' },
 ]
 

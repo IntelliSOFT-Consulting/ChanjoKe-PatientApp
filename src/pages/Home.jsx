@@ -23,6 +23,7 @@ function Home() {
 
   const [upcomingVaccinations, setUpcomingVaccinations] = useState([])
   const [vaccinationAppointments, setVaccinationAppointments] = useState([])
+  const [missedVaccines, setMissedVaccines] = useState([])
   const [user, setUser] = useState({})
 
   const navigate = useNavigate()
@@ -98,7 +99,31 @@ function Home() {
 
       setUpcomingVaccinations(vaccinesScheduledToday)
     }
-  }, [recommendations, appointments, immunizations])
+
+    const completedImmunizations = immunizations
+      .filter((immunization) => immunization?.resource?.status === 'completed')
+      .map((item) => item?.resource?.vaccineCode?.text)
+
+    if (Array.isArray(recommendations) && recommendations.length > 0 && Array.isArray(immunizations) && immunizations.length > 0) {
+      const unvaccinatedRecommendations = recommendations.filter((recommendation) => 
+        !completedImmunizations.includes(recommendation?.vaccineCode?.[0]?.text)
+      )
+      const passedVaccines = unvaccinatedRecommendations.map((vaccine) => {
+        const dueDate = vaccine?.dateCriterion?.find(item => item.code.coding.some(code => code.code === "Earliest-date-to-administer"))
+        if (moment().isAfter(dueDate.value, 'day') && vaccine?.description === 'routine') {
+          return vaccine
+        }
+      }).filter(Boolean)
+
+      const missedVaccines = passedVaccines.map((item) => ({
+        appointments: item?.vaccineCode?.[0]?.text,
+        scheduledDate: moment(item?.dateCriterion?.[0]?.value).format('DD-MM-YYYY'),
+        status: 'Missed',
+      }))
+      setMissedVaccines(missedVaccines)
+    }
+    
+  }, [recommendations, appointments])
 
   const columns = [
     {
@@ -115,6 +140,24 @@ function Home() {
       title: 'Appointment Date',
       dataIndex: 'appointmentDate',
       key: 'appointmentDate',
+    },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
+    },
+  ]
+
+  const missedVaccinesColumns = [
+    {
+      title: 'Vaccine',
+      dataIndex: 'appointments',
+      key: 'appointments',
+    },
+    {
+      title: 'Scheduled Date',
+      dataIndex: 'scheduledDate',
+      key: 'scheduledDate',
     },
     {
       title: 'Status',
@@ -150,6 +193,34 @@ function Home() {
             </div>
           </div>
         ))}
+      </div>
+
+      <div className='hidden md:block'>
+      {missedVaccines.length > 0 && !loader && 
+        <>
+          <h1 className="font-semibold text-1xl mb-3">
+            Missed Vaccines
+          </h1>
+        
+          <Table
+            columns={missedVaccinesColumns}
+            dataSource={missedVaccines}
+            size="small"
+            loading={loader}
+            locale={{
+              emptyText: (
+                <div className="flex flex-col items-center justify-center">
+                  <p className="text-gray-400 text-sm my-2">
+                    User has no missed vaccinations
+                  </p>
+                </div>
+              ),
+            }}
+          />
+
+          <br />
+        </>
+        }
       </div>
 
       <div className='hidden md:block'>
