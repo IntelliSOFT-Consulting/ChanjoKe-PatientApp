@@ -23,8 +23,8 @@ export default function useCertificate() {
 
     if (response && Array.isArray(response?.entry) && response?.entry.length > 0) {
       const certificateData = response?.entry.map((item) => ({
-        date: moment(item?.resource?.date).format('DD-MM-YYYY'),
         vaccine: getDisplayForSystemContainingMOH(item?.resource?.type?.coding),
+        date: moment(item?.resource?.date).format('DD-MM-YYYY'),
         action: { text: 'Download', data: item?.resource?.content?.[0]?.attachment },
       }))
       setCertificates(certificateData)
