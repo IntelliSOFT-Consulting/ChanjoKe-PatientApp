@@ -83,21 +83,47 @@ function Home() {
       const incompleteVaccinations = recommendations.filter((rec) => !completedImmunizationVaccineNames.includes(rec?.vaccineCode?.[0]?.text))
       const validRecommendations = incompleteVaccinations.filter((rec) => !appointmentNames.includes(rec?.vaccineCode?.[0]?.text))
 
-      const upcoming = validRecommendations.map((vaccine) => {
-        const dueDate = vaccine?.dateCriterion?.find(item => item.code.coding.some(code => code.code === "Earliest-date-to-administer"))
-        if (moment().isSame(dueDate.value, 'day')) {
-          return vaccine
-        }
-      }).filter(Boolean)
+      const userDetails = JSON.parse(localStorage.getItem('userDetails'))
+      const userAge = moment().diff(moment(userDetails?.birthDate).format('YYYY-MM-DD'), 'days')
 
-      const vaccinesScheduledToday = upcoming.map((item) => ({
-        date: moment(item?.dateCriterion?.[0]?.value).format('DD-MM-YYYY'),
-        vaccine: item?.vaccineCode?.[0]?.text,
-        dose: item?.doseNumberPositiveInt,
-        status: 'Due',
-      }))
+      if (userAge < 14) {
+        const upcoming = validRecommendations.map((vaccine) => {
+          const dueDate = vaccine?.dateCriterion?.find(item => item.code.coding.some(code => code.code === "Earliest-date-to-administer"))
+          if (moment().isAfter(dueDate.value, 'day') && vaccine?.description === 'routine') {
+            return vaccine
+          }
+        }).filter(Boolean)
 
-      setUpcomingVaccinations(vaccinesScheduledToday)
+        const series = upcoming.filter((item) => item?.series === upcoming[0].series)
+
+        const vaccinesScheduledToday = series.map((item) => ({
+          date: moment(item?.dateCriterion?.[0]?.value).format('DD-MM-YYYY'),
+          vaccine: item?.vaccineCode?.[0]?.text,
+          dose: item?.doseNumberPositiveInt,
+          status: 'Due',
+        }))
+
+        setUpcomingVaccinations(vaccinesScheduledToday)
+      } else {
+        const upcoming = validRecommendations.map((vaccine) => {
+          const dueDate = vaccine?.dateCriterion?.find(item => item.code.coding.some(code => code.code === "Earliest-date-to-administer"))
+          if (moment().isBefore(dueDate.value, 'day') && vaccine?.description === 'routine') {
+            return vaccine
+          }
+        }).filter(Boolean)
+
+        const series = upcoming.filter((item) => item?.series === upcoming[0].series)
+
+        const vaccinesScheduledToday = series.map((item) => ({
+          date: moment(item?.dateCriterion?.[0]?.value).format('DD-MM-YYYY'),
+          vaccine: item?.vaccineCode?.[0]?.text,
+          dose: item?.doseNumberPositiveInt,
+          status: 'Due',
+        }))
+
+        setUpcomingVaccinations(vaccinesScheduledToday)
+      }
+      
     }
 
     const completedImmunizations = immunizations
