@@ -130,13 +130,14 @@ function Home() {
       .filter((immunization) => immunization?.resource?.status === 'completed')
       .map((item) => item?.resource?.vaccineCode?.text)
 
-    if (Array.isArray(recommendations) && recommendations.length > 0 && Array.isArray(immunizations) && immunizations.length > 0) {
+    if (Array.isArray(recommendations) && recommendations.length > 0) {
       const unvaccinatedRecommendations = recommendations.filter((recommendation) => 
         !completedImmunizations.includes(recommendation?.vaccineCode?.[0]?.text)
       )
       const passedVaccines = unvaccinatedRecommendations.map((vaccine) => {
         const dueDate = vaccine?.dateCriterion?.find(item => item.code.coding.some(code => code.code === "Earliest-date-to-administer"))
-        if (moment().isAfter(dueDate.value, 'day') && vaccine?.description === 'routine') {
+        const dueDateMoment = moment(dueDate.value).add(14, 'days')
+        if (moment().isAfter(dueDateMoment, 'day') && vaccine?.description === 'routine') {
           return vaccine
         }
       }).filter(Boolean)
