@@ -130,7 +130,7 @@ function Home() {
       .filter((immunization) => immunization?.resource?.status === 'completed')
       .map((item) => item?.resource?.vaccineCode?.text)
 
-    if (Array.isArray(recommendations) && recommendations.length > 0) {
+    if (recommendations?.length > 0) {
       const unvaccinatedRecommendations = recommendations.filter((recommendation) => 
         !completedImmunizations.includes(recommendation?.vaccineCode?.[0]?.text)
       )
