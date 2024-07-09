@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import ProfileDropdown from './ProfileDropdown'
 import { useEffect, useState } from 'react';
 import { useApiRequest } from '../api/useApi';
-import calculateAge from '../utils/calculateAge';
+import { writeAge, calculateAges } from '../utils/methods'
 
 function NavBar() {
 
@@ -14,9 +14,9 @@ function NavBar() {
 
   const fetchUserData = async () => {
     const response = await get(`/hapi/fhir/Patient/${user?.fhirPatientId}`)
-    const age = calculateAge(response?.birthDate)
+    const age = calculateAges(response?.birthDate)
     localStorage.setItem('userDetails', JSON.stringify(response))
-    setAge(age)
+    setAge(writeAge(age))
   }
 
   useEffect(() => {
