@@ -150,7 +150,7 @@ function Home() {
       setMissedVaccines(missedVaccines)
     }
     
-  }, [recommendations, appointments])
+  }, [recommendations, appointments, immunizations])
 
   const columns = [
     {
