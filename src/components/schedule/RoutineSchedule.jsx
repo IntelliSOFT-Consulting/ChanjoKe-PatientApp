@@ -50,7 +50,7 @@ export default function RoutineSchedule({ schedule, columns }) {
 
       setCategorizedSchedules(categorized)
     }
-  }, [])
+  }, [schedule])
 
   return (
     <>

@@ -23,7 +23,7 @@ export default function NonRoutineSchedule({ schedule, columns }) {
               vaccine: obj?.vaccineCode?.[0]?.text,
               status: obj?.forecastStatus?.coding?.[0]?.display,
               administeredDate: obj?.administeredDate,
-              dueDate: moment(obj?.dateCriterion?.[0]?.value).format('DD-MM-YYYY'),
+              dueDate: '-',
             });
         } else {
             categorizedData[series] = [{
@@ -31,7 +31,7 @@ export default function NonRoutineSchedule({ schedule, columns }) {
               vaccine: obj?.vaccineCode?.[0]?.text,
               status: obj?.forecastStatus?.coding?.[0]?.display,
               administeredDate: obj?.administeredDate,
-              dueDate: moment(obj?.dateCriterion?.[0]?.value).format('DD-MM-YYYY'),
+              dueDate: '-',
             }];
         }
     });
@@ -50,7 +50,7 @@ export default function NonRoutineSchedule({ schedule, columns }) {
 
       setCategorizedSchedules(categorized)
     }
-  }, [])
+  }, [schedule])
 
   return (
     <>
