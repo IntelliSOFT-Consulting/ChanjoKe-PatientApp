@@ -13,8 +13,8 @@ import useImmunizationRecommendation from '../hooks/useImmunizationRecommendatio
 import useImmunization from '../hooks/useImmunization';
 
 const tHeaders = [
-  { title: 'Scheduled Date', classes: 'py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900' },
-  { title: 'Vaccine', classes: 'px-3 py-3.5 text-left text-sm font-semibold text-gray-900' },
+  { title: 'Vaccine', classes: 'py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900' },
+  { title: 'Scheduled Date', classes: 'px-3 py-3.5 text-left text-sm font-semibold text-gray-900' },
   { title: 'Dose Number', classes: 'px-3 py-3.5 text-left text-sm font-semibold text-gray-900' },
   { title: 'Status', classes: 'px-3 py-3.5 text-left text-sm font-semibold text-gray-900' }
 ]
@@ -115,8 +115,8 @@ function Home() {
         const series = upcoming.filter((item) => item?.series === upcoming[0].series)
 
         const vaccinesScheduledToday = series.map((item) => ({
-          date: moment(item?.dateCriterion?.[0]?.value).format('DD-MM-YYYY'),
           vaccine: item?.vaccineCode?.[0]?.text,
+          date: moment(item?.dateCriterion?.[0]?.value).format('DD-MM-YYYY'),
           dose: item?.doseNumberPositiveInt,
           status: 'Due',
         }))
