@@ -106,11 +106,11 @@ function Home() {
         setUpcomingVaccinations(vaccinesScheduledToday)
       } else {
         const upcoming = validRecommendations.map((vaccine) => {
-          const dueDate = vaccine?.dateCriterion?.find(item => item.code.coding.some(code => code.code === "Earliest-date-to-administer"))
+          const dueDate = vaccine?.dateCriterion?.find(item => item.code.coding.some(code => code.code === "Latest-date-to-administer"))
           if (moment().isBefore(dueDate.value, 'day') && vaccine?.description === 'routine') {
             return vaccine
           }
-        }).filter(Boolean)
+        }).filter(Boolean);
 
         const series = upcoming.filter((item) => item?.series === upcoming[0].series)
 
