@@ -12,7 +12,7 @@ export default function useImmunizationRecommendation() {
 
   const fetchUserRecommendations = async (user) => {
     setLoader(true)
-    const response = await get(`${immunizationRecommendationEndpoint}?patient=Patient/${user?.fhirPatientId}`)
+    const response = await get(`${immunizationRecommendationEndpoint}?patient=Patient/${user?.fhirPatientId}&_count=100`)
 
     setRecommendations(response?.entry?.[0]?.resource?.recommendation)
     setLoader(false)

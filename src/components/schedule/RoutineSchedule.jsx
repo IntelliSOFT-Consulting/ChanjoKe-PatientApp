@@ -9,7 +9,6 @@ import { colorCodeVaccines } from '../../utils/vaccineController'
 
 export default function RoutineSchedule({ schedule, columns }) {
 
-  const [loading, setLoader] = useState(false)
   const [categorizedSchedules, setCategorizedSchedules] = useState({})
 
   function categorizeDataBySeries(data) {
@@ -56,7 +55,7 @@ export default function RoutineSchedule({ schedule, columns }) {
     <>
       <br className='hidden md:block' />
 
-      {schedule.length < 1 && !loading && <div className='text-center font-bold mt-5'>No Schedules found for user</div>}
+      {schedule.length < 1 && <div className='text-center font-bold mt-5'>No Schedules found for user</div>}
 
       <div className="overflow-hidden rounded-lg bg-white px-4 pb-12 pt-5 mt-2 shadow sm:px-6 sm:pt-6">
         <div>
@@ -64,7 +63,7 @@ export default function RoutineSchedule({ schedule, columns }) {
             <p>Vaccination Schedule</p>
           </div>
 
-          {schedule.length && !loading ? (
+          {schedule.length ? (
               Object.keys(categorizedSchedules).map(
                 (category) =>
                   Object.keys(categorizedSchedules).length > 0 && (

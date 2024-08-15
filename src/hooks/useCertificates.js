@@ -13,7 +13,7 @@ export default function useCertificate() {
   const [loader, setLoader] = useState(false)
 
   function getDisplayForSystemContainingMOH(items) {
-    const itemWithMOHSystem = items.find(item => item.system.includes('MOH'));
+    const itemWithMOHSystem = items?.find(item => item.system.includes('MOH'));
     return itemWithMOHSystem ? itemWithMOHSystem.display : undefined;
 }
 

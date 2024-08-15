@@ -93,7 +93,7 @@ export default function VaccinationSchedule() {
   useEffect(() => {
     const administeredVaccines = immunizations?.map((vaccine) => vaccine?.resource?.vaccineCode?.text)
 
-    recommendations.map(recommendation => {
+    recommendations?.map(recommendation => {
       if (!administeredVaccines?.includes(recommendation?.vaccineCode?.[0]?.text)) {
         return recommendation;
       }
@@ -111,13 +111,13 @@ export default function VaccinationSchedule() {
     if (Array.isArray(recommendations)) {
       setVaccineSchedules(recommendations)
     }
-  }, [immunizations, recommendations])
+  }, [immunizations, recommendations ])
 
   return (
     <>
       <br className='hidden md:block' />
 
-      {vaccineSchedules.length > 1 &&
+      {vaccineSchedules.length > 0 &&
         <>
           {loader === true &&
             <div className="my-10 mx-auto flex justify-center h-5 w-5">
