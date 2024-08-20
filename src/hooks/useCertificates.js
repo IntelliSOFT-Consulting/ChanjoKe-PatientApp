@@ -19,7 +19,7 @@ export default function useCertificate() {
 
   const fetchUserCertificates = async (user) => {
     setLoader(true)
-    const response = await get(`${certificateEndpoint}?subject=Patient/${user?.fhirPatientId}`)
+    const response = await get(`${certificateEndpoint}?subject=Patient/${user?.fhirPatientId}&type:code=82593-5`)
 
     if (response && Array.isArray(response?.entry) && response?.entry.length > 0) {
       const certificateData = response?.entry.map((item) => ({
