@@ -22,11 +22,23 @@ export default function useCertificate() {
     const response = await get(`${certificateEndpoint}?subject=Patient/${user?.fhirPatientId}&type:code=82593-5`)
 
     if (response && Array.isArray(response?.entry) && response?.entry.length > 0) {
-      const certificateData = response?.entry.map((item) => ({
-        vaccine: getDisplayForSystemContainingMOH(item?.resource?.type?.coding),
-        date: moment(item?.resource?.date).format('DD-MM-YYYY'),
-        action: { text: 'Download', data: item?.resource?.content?.[0]?.attachment },
-      }))
+      const uniqueVaccines = new Set();
+      const certificateData = response?.entry.reduce((accumulator, item) => {
+        const vaccineName = getDisplayForSystemContainingMOH(item?.resource?.type?.coding);
+        const formattedDate = moment(item?.resource?.date).format('DD-MM-YYYY');
+        const attachmentData = item?.resource?.content?.[0]?.attachment;
+        if (vaccineName && !uniqueVaccines.has(vaccineName)) {
+          uniqueVaccines.add(vaccineName);
+    
+          accumulator.push({
+            vaccine: vaccineName,
+            date: formattedDate,
+            action: { text: 'Download', data: attachmentData },
+          });
+        }
+    
+        return accumulator;
+      }, []);
       setCertificates(certificateData)
       setCertificateCount(response?.total || response?.entry?.length)
       setLoader(false)
