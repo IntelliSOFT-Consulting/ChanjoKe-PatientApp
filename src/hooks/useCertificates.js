@@ -40,7 +40,7 @@ export default function useCertificate() {
         return accumulator;
       }, []);
       setCertificates(certificateData)
-      setCertificateCount(response?.total || response?.entry?.length)
+      setCertificateCount(certificateData?.length)
       setLoader(false)
     } else {
       setLoader(false)
