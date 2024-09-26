@@ -1,94 +1,57 @@
-import MOHLogo from '../assets/nav-logo.png'
-import TextInput from '../components/TextInput'
-import { useNavigate } from 'react-router-dom'
-import { useState } from 'react'
-import { Button } from 'antd'
-import { useApiRequest } from '../api/useApi'
+import MOHLogo from "../assets/nav-logo.png";
+import TextInput from "../components/TextInput";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { Button, Form, Input } from "antd";
+import { useApiRequest } from "../api/useApi";
 
 export default function ResetPassword() {
-  const [authData, setAuthData] = useState({
-    idNumber: '',
-    email: '',
-  });
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
-  const navigation = useNavigate()
-  const { get } = useApiRequest()
+  const navigation = useNavigate();
+  const { get } = useApiRequest();
 
-  const handleChange = (name, value) => {
-    setAuthData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    setLoading(true)
+  const handleSubmit = async (values) => {
+    setLoading(true);
 
     try {
-      const results = await get(`/auth/client/reset-password?idNumber=${authData.idNumber}&email=${authData.email}`)
+      const { idNumber, email } = values;
+      const results = await get(`/auth/client/reset-password?idNumber=${idNumber}&email=${email}`);
 
       if (!results) {
         // Error message is shown
       } else {
-        navigation("/auth/set-password")
+        navigation("/auth/set-password");
       }
     } catch (e) {
-      console.log({ e })
+      console.log({ e });
     }
 
-    setLoading(false)
-
+    setLoading(false);
   };
 
   return (
-    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8  mt-5 md:mt-32">
-      <div className="mx-auto max-w-3xl">
-        <img
-          className="h-24 mx-auto"
-          src={MOHLogo}
-          alt="Ministry of Health"/>
+    <div className='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8  mt-5 md:mt-32'>
+      <div className='mx-auto max-w-3xl'>
+        <img className='h-24 mx-auto' src={MOHLogo} alt='Ministry of Health' />
 
         <h1 className='text-4xl text-[#163C94] text-center'>Reset your password</h1>
 
-        <form className='mt-10 w-full max-w-64 md:px-40' onSubmit={handleSubmit}>
-          <TextInput
-            inputType="text"
-            inputName="idNumber"
-            inputId="idNumber"
-            inputValue={authData.idNumber}
-            onInputChange={(value) => handleChange("idNumber", value)}
-            leadingIcon="true"
-            leadingIconName="mail"
-            inputPlaceholder="ID or Passport Number"/>
+        <Form className='flex flex-col mt-10 mx-10' onFinish={handleSubmit} layout='vertical'>
+          <Form.Item name='idNumber' rules={[{ required: true, message: "Please enter your ID or Passport Number" }]}>
+            <Input placeholder='ID or Passport Number' />
+          </Form.Item>
 
-          <br />
+          <Form.Item name='email' rules={[{ required: true, message: "Please enter your email" }]}>
+            <Input placeholder='Email' />
+          </Form.Item>
 
-          <TextInput
-            inputType="email"
-            inputName="email"
-            inputId="email"
-            leadingIcon="true"
-            inputValue={authData.email}
-            onInputChange={(value) => handleChange("email", value)}
-            leadingIconName="mail"
-            inputPlaceholder="Email"/>
-
-          <div className="mt-6 grid grid-cols-2 gap-4">
-            <div></div>
-            <Button
-              type="submit"
-              htmlType="submit"
-              loading={loading}
-              disabled={loading}
-              className="flex w-full items-center justify-center gap-3 rounded-md bg-[#163C94] px-3 py-3 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#24292F]"
-              size="large">
-                Request Reset
-              </Button>
+          <div className='flex justify-end'>
+            <Button type='primary' htmlType='submit' loading={loading} disabled={loading} className='px-10'>
+              Request Reset
+            </Button>
           </div>
-
-        </form>
+        </Form>
       </div>
     </div>
   );

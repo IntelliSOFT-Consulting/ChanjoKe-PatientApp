@@ -2,6 +2,7 @@
   "name": "chanjokepatient",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "dependencies": {
     "@headlessui/react": "^1.7.17",
     "@heroicons/react": "^2.0.18",
@@ -15,15 +16,13 @@
     "moment": "^2.30.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-jss": "^10.10.0",
-    "react-scripts": "5.0.1",
-    "web-vitals": "^2.1.4"
+    "react-jss": "^10.10.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview"
   },
   "eslintConfig": {
     "extends": [
@@ -44,7 +43,13 @@
     ]
   },
   "devDependencies": {
+    "@types/react": "^18.3.9",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.47",
     "react-router-dom": "^6.19.0",
-    "tailwindcss": "^3.3.5"
+    "tailwindcss": "^3.4.13",
+    "vite": "^5.4.8"
   }
 }

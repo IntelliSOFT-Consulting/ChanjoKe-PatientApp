@@ -1,6 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom'
 import Page404 from '../pages/Page404'
-import Root from '../routes/Root'
+import Root from './Root'
 import Home from '../pages/Home'
 import VaccinationCertificate from '../pages/VaccinationCertificate'
 import VaccinationSchedule from '../pages/VaccinationSchedule'
