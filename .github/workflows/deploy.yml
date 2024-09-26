@@ -5,28 +5,19 @@ on:
     branches: [main, develop]
   workflow_dispatch:
     inputs:
-      branch:
-        description: "Branch to deploy"
+      environment:
+        description: "Environment to deploy"
         required: true
         type: choice
         options:
-          - main
-          - develop
+          - production
+          - Dev
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        include:
-          - branch: main
-            environment: production
-          - branch: develop
-            environment: Dev
-    if: >
-      (github.event_name == 'push' && github.ref == 'refs/heads/${{ matrix.branch }}') ||
-      (github.event_name == 'workflow_dispatch' && github.event.inputs.branch == '${{ matrix.branch }}')
-    environment: ${{ matrix.environment }}
+    environment: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.environment || (github.ref == 'refs/heads/main' && 'production' || 'Dev') }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -85,6 +76,6 @@ jobs:
             sudo docker run -d --name \$CONTAINER_NAME -p 8098:3000 \$IMAGE_NAME
             sudo docker logout
             
-            echo "${{ matrix.environment }} deployment completed successfully"
+            echo "${{ github.event_name == 'workflow_dispatch' && github.event.inputs.environment || (github.ref == 'refs/heads/main' && 'production' || 'Dev') }} deployment completed successfully"
           EOF
           rm -f private_key
