@@ -1,15 +1,14 @@
-import MOHLogo from "../assets/nav-logo.png";
 import { LockOutlined, UserOutlined, WarningTwoTone } from "@ant-design/icons";
-import { Link, useNavigate } from "react-router-dom";
+import { Button, Form, Input } from "antd";
 import { useState } from "react";
-import { Button, Input, Form, Row, Col } from "antd";
+import { Link } from "react-router-dom";
 import { useApiRequest } from "../api/useApi";
+import MOHLogo from "../assets/nav-logo.png";
 
 export default function Login() {
   const [loading, setLoading] = useState(false);
   const [loginError, setLoginError] = useState(false);
 
-  const navigation = useNavigate();
   const { post, get } = useApiRequest();
   const [form] = Form.useForm();
 
@@ -31,7 +30,7 @@ export default function Login() {
 
         localStorage.setItem("user", JSON.stringify(userData?.user));
 
-        navigation("/");
+        window.location.href = "/";
       }
     } catch (e) {
       console.log({ e });

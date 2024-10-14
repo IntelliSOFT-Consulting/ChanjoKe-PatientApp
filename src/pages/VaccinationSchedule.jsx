@@ -81,6 +81,7 @@ export default function VaccinationSchedule() {
     immunizations,
     fetchPatientImmunizations,
   } = useImmunization()
+
   const user = JSON.parse(localStorage.getItem('user'))
 
   const [vaccineSchedules, setVaccineSchedules] = useState([])
