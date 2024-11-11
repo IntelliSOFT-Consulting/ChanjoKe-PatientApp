@@ -36,7 +36,7 @@ export default function SetNewPassword() {
       } else {
         message.info('Password reset successfully, you can login')
 
-        navigation("/auth/login")
+        navigation("/user-auth/login")
       }
     } catch (e) {
       console.log({ e })

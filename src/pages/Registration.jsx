@@ -26,7 +26,7 @@ function Registration() {
         setRegistrationError(false);
         message.success("Registration successful, log in with the credentials used");
 
-        navigate("/auth");
+        navigate("/user-auth");
       }
     } catch (e) {
       console.log({ e });
@@ -157,7 +157,7 @@ function Registration() {
 
           <p className='text-center mt-3 mb-5'>
             Already have an account?{" "}
-            <Link className='text-[#163C94]' to='/auth'>
+            <Link className='text-[#163C94]' to='/user-auth'>
               Login here
             </Link>
           </p>

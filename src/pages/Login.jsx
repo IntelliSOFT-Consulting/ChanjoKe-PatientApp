@@ -106,7 +106,7 @@ export default function Login() {
 
           <p className='text-center mt-3 mb-5'>
             Don't have an account?{" "}
-            <Link className='text-[#163C94]' to='/auth/registration'>
+            <Link className='text-[#163C94]' to='/user-auth/registration'>
               Sign up here
             </Link>
           </p>
