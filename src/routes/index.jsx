@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router-dom'
+import { createHashRouter } from 'react-router-dom'
 import Page404 from '../pages/Page404'
 import Root from './Root'
 import Home from '../pages/Home'
@@ -11,7 +11,7 @@ import FAQs from '../pages/FAQs'
 import ResetPassword from '../pages/ResetPassword'
 import SetNewPassword from '../pages/SetNewPassword'
 
-const router = createBrowserRouter([
+const router = createHashRouter([
   {
     path: '/',
     element: <Root />,
