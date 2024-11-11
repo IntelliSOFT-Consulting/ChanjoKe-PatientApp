@@ -5,7 +5,7 @@ import react from "@vitejs/plugin-react";
 export default defineConfig(({ command, mode }) => {
   const config = {
     plugins: [react()],
-    base: "/client",
+    // base: "/client",
     define: {
       "process.env": process.env,
     },

@@ -1,61 +1,50 @@
-import { Fragment, useState } from 'react'
-import { Menu, Transition } from '@headlessui/react'
-import { Link, useNavigate } from 'react-router-dom'
-import { Button, Modal } from 'antd'
-import UserDetailsForm from './UserDetailsForm'
+import { Menu, Transition } from "@headlessui/react";
+import { Modal } from "antd";
+import { Fragment, useState, useCallback } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import UserDetailsForm from "./UserDetailsForm";
+import { useSelector, useDispatch } from "react-redux";
+import { logout } from "../redux/slices/userSlice";
 
-const classNames = (...classes) => classes.filter(Boolean).join(' ')
+const classNames = (...classes) => classes.filter(Boolean).join(" ");
 
 export default function ProfileDropdown() {
-  const userStorage = localStorage.getItem('user')
-  const navigate = useNavigate()
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const user = JSON.parse(userStorage)
-  
-  const showModal = () => {
-    setIsModalOpen(true);
-  };
-  const handleOk = () => {
-    setIsModalOpen(false);
-  };
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  };
+  const { user } = useSelector((state) => state.clientInfo);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  function logUserOut() {
-    localStorage.clear()
-    navigate("/user-auth")
-  }
+  const showModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
+
+  const logUserOut = useCallback(() => {
+    dispatch(logout());
+    navigate("/user-auth");
+  }, [dispatch, navigate]);
 
   return (
     <>
-      {/* Profile Modal */}
+      {/* User Details Modal */}
       <Modal
         title="USER DETAILS"
-        open={isModalOpen}
-        onOk={handleOk}
-        onCancel={handleCancel}
-        footer={[
-          // <Button key="submit" className='bg-[#163C94] text-white' onClick={handleOk}>
-          //   Update Details
-          // </Button>
-        ]}
-        >
+        visible={isModalOpen}
+        onOk={closeModal}
+        onCancel={closeModal}
+        footer={null}
+      >
         <UserDetailsForm />
       </Modal>
-    
+
       <Menu as="div" className="relative">
-        <div>
-          <Menu.Button className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
-            <span className="absolute -inset-1.5" />
-            <span className="sr-only">Open user menu</span>
-            <img
-              className="h-8 w-8 rounded-full"
-              src={`https://ui-avatars.com/api/?name=${user?.firstName}+${user?.lastName}&background=163C94&color=fff`}
-              alt=""
-            />
-          </Menu.Button>
-        </div>
+        <Menu.Button className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+          <span className="sr-only">Open user menu</span>
+          <img
+            className="h-8 w-8 rounded-full"
+            src={`https://ui-avatars.com/api/?name=${user?.firstName}+${user?.lastName}&background=163C94&color=fff`}
+            alt="User Avatar"
+          />
+        </Menu.Button>
+
         <Transition
           as={Fragment}
           enter="transition ease-out duration-100"
@@ -70,25 +59,31 @@ export default function ProfileDropdown() {
               {({ active }) => (
                 <button
                   onClick={showModal}
-                  className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}>
+                  className={classNames(
+                    active ? "bg-gray-100" : "",
+                    "block w-full px-4 py-2 text-sm text-gray-700 text-left"
+                  )}
+                >
                   Profile
                 </button>
               )}
             </Menu.Item>
             <Menu.Item>
               {({ active }) => (
-                <Link
-                  to="/user-auth"
+                <button
                   onClick={logUserOut}
-                  className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}>
+                  className={classNames(
+                    active ? "bg-gray-100" : "",
+                    "block w-full px-4 py-2 text-sm text-gray-700 text-left"
+                  )}
+                >
                   Logout
-                </Link>
+                </button>
               )}
             </Menu.Item>
           </Menu.Items>
         </Transition>
       </Menu>
     </>
-    
-  )
+  );
 }
