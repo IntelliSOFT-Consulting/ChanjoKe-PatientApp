@@ -21,7 +21,7 @@ export default function ResetPassword() {
       if (!results) {
         // Error message is shown
       } else {
-        navigation("/auth/set-password");
+        navigation("/user-auth/set-password");
       }
     } catch (e) {
       console.log({ e });

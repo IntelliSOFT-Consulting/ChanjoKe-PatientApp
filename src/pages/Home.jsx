@@ -52,7 +52,7 @@ function Home() {
     
     if (userStorage === 'undefined' || userStorage === null || !Object.keys(userStorage).length) {
       localStorage.clear()
-      navigate("/auth")
+      navigate("/user-auth")
     }
 
     setUser(JSON.parse(userStorage))

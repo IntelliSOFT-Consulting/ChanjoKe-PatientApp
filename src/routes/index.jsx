@@ -36,7 +36,7 @@ const router = createBrowserRouter([
     ]
   },
   {
-    path: '/auth',
+    path: '/user-auth',
     element: <UnauthorizedLayout />,
     errorElement: <Page404 />,
     children: [

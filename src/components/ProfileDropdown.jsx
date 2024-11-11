@@ -24,7 +24,7 @@ export default function ProfileDropdown() {
 
   function logUserOut() {
     localStorage.clear()
-    navigate("/auth")
+    navigate("/user-auth")
   }
 
   return (
@@ -78,7 +78,7 @@ export default function ProfileDropdown() {
             <Menu.Item>
               {({ active }) => (
                 <Link
-                  to="/auth"
+                  to="/user-auth"
                   onClick={logUserOut}
                   className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}>
                   Logout
