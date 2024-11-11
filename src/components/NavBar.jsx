@@ -4,9 +4,10 @@ import ProfileDropdown from "./ProfileDropdown";
 import { useEffect, useState } from "react";
 import { useApiRequest } from "../api/useApi";
 import { writeAge, calculateAges } from "../utils/methods";
+import { useSelector } from "react-redux";
 
 function NavBar() {
-  const user = JSON.parse(localStorage.getItem("user"));
+  const { user } = useSelector((state) => state.clientInfo);
   const [age, setAge] = useState("");
 
   const { get } = useApiRequest();
@@ -19,8 +20,10 @@ function NavBar() {
   };
 
   useEffect(() => {
-    fetchUserData();
-  }, []);
+    if (user?.access_token) {
+      fetchUserData();
+    }
+  }, [user]);
 
   return (
     <div className='hidden lg:block'>
