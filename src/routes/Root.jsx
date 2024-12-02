@@ -27,7 +27,7 @@ export default function Root() {
     if (!user?.access_token) {
       navigate("/user-auth");
     }
-  }, [user, navigate]);
+  }, [user]);
 
   if (!user?.access_token) return null;
 
