@@ -32,7 +32,7 @@ export default function ProfileDropdown() {
         onCancel={closeModal}
         footer={null}
       >
-        <UserDetailsForm />
+        <UserDetailsForm  user={user} />
       </Modal>
 
       <Menu as="div" className="relative">
