@@ -1,18 +1,17 @@
 import { Form, Row, Col, Input } from 'antd'
 import { useEffect } from 'react'
 
-export default function UserDetailsForm() {
+export default function UserDetailsForm({ user }) {
 
   const [form] = Form.useForm()
   useEffect(() => {
-    const userDetails = JSON.parse(localStorage.getItem('user'))
     const userInfo = JSON.parse(localStorage.getItem('userDetails'))
     const moreDetails = {
       county: userInfo?.address?.[0]?.line?.[0],
       subCounty: userInfo?.address?.[0]?.line?.[1],
       ward: userInfo?.address?.[0]?.line?.[2],
     }
-    form.setFieldsValue({ ...userDetails, ...moreDetails })
+    form.setFieldsValue({ ...user, ...moreDetails })
   })
 
   return (
