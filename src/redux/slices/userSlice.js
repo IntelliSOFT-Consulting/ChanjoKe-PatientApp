@@ -5,7 +5,7 @@ import { message } from "antd";
 const BASE_URL = import.meta.env.VITE_SERVER_BASE_URL;
 
 const getToken = () => {
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const user = JSON.parse(localStorage.getItem("client") || "{}");
   return user?.access_token ? `Bearer ${user.access_token}` : "";
 };
 
@@ -29,14 +29,14 @@ const handleResponseError = async (error) => {
 
     originalRequest._retry = true;
     try {
-      const token = JSON.parse(localStorage.getItem("user") || "{}");
+      const token = JSON.parse(localStorage.getItem("client") || "{}");
       const response = await server.post("/auth/token", {
         grant_type: "refresh_token",
         refresh_token: token.refresh_token,
       });
-      const user = JSON.parse(localStorage.getItem("user") || "{}");
+      const user = JSON.parse(localStorage.getItem("client") || "{}");
       user.access_token = response.data.access_token;
-      localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("client", JSON.stringify(user));
       originalRequest.headers.Authorization = `Bearer ${response.data.access_token}`;
       return server(originalRequest);
     } catch (err) {
@@ -51,7 +51,7 @@ const server = createAxiosInstance();
 server.interceptors.response.use((response) => response, handleResponseError);
 
 const initialState = {
-  user: JSON.parse(localStorage.getItem("user") || "null"),
+  user: JSON.parse(localStorage.getItem("client") || "null"),
   loading: false,
   error: null,
 };
@@ -68,7 +68,7 @@ export const login = createAsyncThunk("user/login", async (values, { rejectWithV
       ...auth,
     };
 
-    localStorage.setItem("user", JSON.stringify(user));
+    localStorage.setItem("client", JSON.stringify(user));
     return user;
   } catch (error) {
     console.log(error);
@@ -82,7 +82,7 @@ const userSlice = createSlice({
   reducers: {
     logout: (state) => {
       state.user = null;
-      localStorage.removeItem("user");
+      localStorage.removeItem("client");
       localStorage.clear();
     },
   },

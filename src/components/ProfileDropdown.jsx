@@ -27,7 +27,7 @@ export default function ProfileDropdown() {
       {/* User Details Modal */}
       <Modal
         title="USER DETAILS"
-        visible={isModalOpen}
+        open={isModalOpen}
         onOk={closeModal}
         onCancel={closeModal}
         footer={null}
